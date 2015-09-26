@@ -27,17 +27,11 @@
 <section>
 <attributes>
 <toc>None</toc>
-<*modifier*>*</*modifier*>
+<*modifier*>None</*modifier*>
 <title>Introduction</title>
 </attributes>
 <par>
-<centering>
-The maina<'>
-p
-</'>
-urpose of this project is the creation of an automated system to evalute the reliability and quality of articles and pages on a wiki-style learning platform. 
-</centering>
-
+The main purpose of this project is the creation of an automated system to evalute the reliability and quality of articles and pages on a wiki-style learning platform. 
 </par>
 <paragraph>
 <attributes>
@@ -57,10 +51,7 @@ urpose of this project is the creation of an automated system to evalute the rel
 <title>The Solution</title>
 </attributes>
 <par>
- Our base idea is measuring the trustworthiness of the users to evaluate their writing reliability and their ability to review other’s works. Every document is voted by users and, using our estimate of their reliability, we can get an overall rating of it. 
-</par>
-<par>
-The complete history of the document is followed to have a precise determination of its quality: every version has a weight related to its importance in the total document. Then, we found a way to identify stable versions using the distribution of the voters and votes: a kind of limit that it has to be reached to guarantee that a sufficient number of users has rated the content. <accapo>Every user’s action implies an adjustment of his rating, trying to measure his real reliability. In a system like this, the activity of the users is also important: more active users are a resource for the platform and have to be prized for their work. 
+ Our base idea is measuring the trustworthiness of the users to evaluate their writing reliability and their ability to review other’s works. Every document is voted by users and, using our estimate of their reliability, we can get an overall rating of it. <accapo>The complete history of the document is followed to have a precise determination of its quality: every version has a weight related to its importance in the total document. Then, we found a way to identify stable versions using the distribution of the voters and votes: a kind of limit that it has to be reached to guarantee that a sufficient number of users has rated the content. <accapo>Every user’s action implies an adjustment of his rating, trying to measure his real reliability. In a system like this, the activity of the users is also important: more active users are a resource for the platform and have to be prized for their work. 
 </par>
 <par>
 <newpage>
@@ -80,15 +71,22 @@ The complete history of the document is followed to have a precise determination
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:user</label>
+</attributes>
 
 </label>
  Every user of <textbf>
+<attributes>
+</attributes>
 <textit>
+<attributes>
+</attributes>
 WikiRating 
 </textit>
 
 </textbf>
-is identified by a unique ID and by two parameters that measures his performance: the trust (or reliability) coefficient (<math>$\mathbf{\alpha }$</math>) and the activity coefficient (<math>$\mathbf{\theta }$</math>). 
+is identified by a unique ID and by two parameters that measures his performance: the trust (or reliability) coefficient (<math>$\mathbf{\alpha }$</math>) and the activity coefficient (<math>$\theta $</math>). 
 </par>
 <subsection>
 <attributes>
@@ -97,16 +95,19 @@ is identified by a unique ID and by two parameters that measures his performance
 <title>Trust Coefficient</title>
 </attributes>
 <par>
- This parameter is a number between 0 to 1, we call it <math>$ \alpha $</math>. The higher it is, the more we can trust the user’s judgements and we can consider <math>$d=x$</math> his writings correct. $ This coefficient comes from the mean of Beta probability density function. 
+ This parameter is a number between 0 to 1, we call it <math>$ \alpha $</math>. The higher it is, the more we can trust the user’s judgements and we can consider his writings correct. This coefficient comes from the mean of Beta probability density function. 
 </par>
 <par>
-<math>   B[x;a,b] = \frac{x^{a-1}\left[1-x\right)^{b-1}}{\displaystyle {\int_0^1 x^{a-1}\left(1-x\right)^{b-1}\,  \mathrm{d}x}} \cos \alpha</math>
+<math>   B[x;a,b] = \frac{x^{a-1}\left(1-x\right)^{b-1}}{\displaystyle {\int_0^1 x^{a-1}\left(1-x\right)^{b-1}\,  \mathrm{d}x}}</math>
 </par>
 <par>
 <math>   \alpha =\bar{x} = \frac{a}{a+b}</math>
 </par>
 <par>
 <figure>
+<attributes>
+<loc>!hpt</loc>
+</attributes>
 <par>
 <centering>
 <par>
@@ -120,6 +121,9 @@ Trust distribution
 </par>
 <par>
  <label>
+<attributes>
+<label>fig:beta</label>
+</attributes>
 
 </label>
  
@@ -206,9 +210,13 @@ In our model we decide to link <math>$a$</math> to the quality of user writing (
 </par>
 <par>
 The initial values for the coefficients must be set properly according to our estimation of the user’s initial trust level. We can link it to domains of users’ email. For example accounts that use a recognized institutional domain (like <textit>
+<attributes>
+</attributes>
 @unimib.it
 </textit>
 ) will start with a trust coefficient higher that account that are registered with a student domain (like <textit>
+<attributes>
+</attributes>
 @campus.unimib.it
 </textit>
 ). That methods can be used to distinguish teachers from students and from common users. The initial value of <math>$\alpha $</math> could also vary over time, studying periodically the overall reliability of the users associated with every domain. 
@@ -231,15 +239,24 @@ The initial values for the coefficients must be set properly according to our es
 </attributes>
 <par>
 <label>
+<attributes>
+<label>sec:chch</label>
+</attributes>
 
 </label>
  We want now to describe how the <textbf>
+<attributes>
+</attributes>
 <textit>
+<attributes>
+</attributes>
 WikiRating 
 </textit>
 
 </textbf>
 system acts on the Chain of Changes (<textit>
+<attributes>
+</attributes>
 ChCh
 </textit>
 ) of a wiki page or document. 
@@ -249,7 +266,11 @@ The history of a document can be described as a descendant chain. First of all a
 </par>
 <par>
 Versions are not all equally important: in the life of a page there are periods of heavy work and frequent changes and periods when the content is quite stable and definite. Usually, in wiki platform, stable versions must be marked by expert editors who check the document and decide that it is ready. In <textbf>
+<attributes>
+</attributes>
 <textit>
+<attributes>
+</attributes>
 WikiRating 
 </textit>
 
@@ -267,6 +288,9 @@ Let’s start introducing how the rating system works.
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:marks</label>
+</attributes>
 
 </label>
  Every registered user that visits a page can assign a vote between 1 to 10 that it is then scaled between 0 to 1 for the calculations. This mark refers to the latest version of the document that is always shown to visitors. Even if the last version is not marked as stable, it must be shown to users (reporting that as a warning) because it has to be evaluated. Votes are not shown on the page because other judgements must not be influenced (See <ref>
@@ -287,6 +311,8 @@ Let’s start introducing how the rating system works.
 </par>
 <par>
 Every vote is associated with user’s trust coefficient that determines the weight of the mark. The global evaluation of <emph>
+<attributes>
+</attributes>
 the single version
 </emph>
  is calculated as a weighted average of single votes over the trust coefficients: 
@@ -310,18 +336,29 @@ So, let’s make an example: Alice creates the page and receives some votes, the
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:sigma</label>
+</attributes>
 
 </label>
  Users are not all equally reliable: for example marks from an ungraduate student must be less influential than marks from a teacher. A calculation of global vote for a page does not ensure us that a document has been checked and evaluated <emph>
+<attributes>
+</attributes>
 sufficently
 </emph>
 . If a page is evaluated as nine but by five users only, we are not satisfied by the level of judgment. Furthermore our opinion could change depending on the five users’ trust coefficient. We need a measure of the <emph>
+<attributes>
+</attributes>
 trustworthiness of the marks
 </emph>
  from now called <math>$\boldsymbol {\sigma }$</math>. <accapo><textbf>
+<attributes>
+</attributes>
 A document’s version is marked as stable when it has been sufficiently evaluated by users, thus when the overall <math>$\boldsymbol {\sigma }$</math> has passed an established threshold.
 </textbf>
  In our model, stability of a document’s version is not related only to the votes that it has received , but it is related to the quality and quantity of the votes, i.e. to their distribution and to the trust coefficient of the users. A stable version has not necessarily an excellent average of votes, but if it’s stable we can be sure that it’s vote has been carefully evaluated by sufficient number of users and they agree to a certain extent. <textbf>
+<attributes>
+</attributes>
  <math>$\boldsymbol {\sigma }$</math> is an evalutation of the reliability of the average of marks of a document.
 </textbf>
  That’s the function of <math>$\sigma $</math> parameter. <accapo><accapo>The <math>$\sigma $</math> of a user’s vote, called <math>$\sigma_i$</math>, is calculated as (<math>$i$</math> is refered to the i-th users): 
@@ -331,6 +368,8 @@ A document’s version is marked as stable when it has been sufficiently evaluat
 </par>
 <par>
  In a <emph>
+<attributes>
+</attributes>
 single version
 </emph>
  the overall <math>$\sigma $</math> value is calculated as: 
@@ -347,6 +386,8 @@ single version
 
 </ref>
 . If votes are distributed in a large range, their mean is less reliable as a global judgment, so <math>$\sigma $</math> is smaller. Wherease if votes are all close to each other, their mean has more significance and the <emph>
+<attributes>
+</attributes>
 trustworthiness of the marks
 </emph>
  <math>$\sigma $</math> increases. Obviously votes from more reliable users are more important than votes from users with a low <math>$\alpha $</math>. Parameters <math>$B$</math> and <math>$C$</math> could be used to make higher <math>$\alpha $</math> and <math>$(1-\Delta V)$</math> more important than smaller values. 
@@ -381,6 +422,9 @@ Now, returning to the problem of the Chain of Changes, what happens if Bob edits
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:decay</label>
+</attributes>
 
 </label>
  When new not stable versions stack on the latest milestone of a document, every ring of the famous Chain of Changes is ranked by a variable number of users. For every version, we have a method to calculate the average vote (eq. <ref>
@@ -427,13 +471,21 @@ If votes lose importance with the addiction of new rings to the Chain of Changes
 </par>
 <par>
 Now we’ll descrive how this sort of <textit>
+<attributes>
+</attributes>
 <textbf>
+<attributes>
+</attributes>
 Decay
 </textbf>
 
 </textit>
  takes part in <textbf>
+<attributes>
+</attributes>
 <textit>
+<attributes>
+</attributes>
 WikiRating 
 </textit>
 
@@ -448,9 +500,14 @@ system.
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:v_decay</label>
+</attributes>
 
 </label>
  The Decay of Votes or <emph>
+<attributes>
+</attributes>
 V Decay
 </emph>
  must give us a way to calculate the average mark of a stack of versions of a document given the votes and the number of changes of every ring. We called this mechanism "decay" just because at every new step of the chain, all previous calculations have to be scaled by a particular factor to take part in the next computing. Proceeding this way, step by step, is the best practice to make the computations the less complex possible with the accumulating of revisions. 
@@ -483,6 +540,8 @@ what to do after a given stable version will be explained later in section <ref>
 
 </footnote>
 . Every version has received a number <math>$N_i$</math> of votes by <math>$N_i$</math> users, everyone with his <math>$ \alpha_i$</math> coefficient. Every user can vote only one time every version. Taking individually every version, we calculate it’s weighted <emph>
+<attributes>
+</attributes>
 partial
 </emph>
  average of marks according to eq. <ref>
@@ -511,6 +570,8 @@ partial
 </attributes>
 <par>
  Now, we start calculating a progressive <emph>
+<attributes>
+</attributes>
 total average
 </emph>
  <math>$\tilde{V}_i$</math>  of marks, starting from the first revision. We use this simple recursive formula, : 
@@ -520,24 +581,38 @@ total average
 </par>
 <par>
  For every step, the <emph>
+<attributes>
+</attributes>
 total
 </emph>
  average depends on the <emph>
+<attributes>
+</attributes>
 partial
 </emph>
  average of votes for the current revision, but the previos <emph>
+<attributes>
+</attributes>
 total
 </emph>
  average is not lost. Actually, the new <emph>
+<attributes>
+</attributes>
 total
 </emph>
  mark is a weighted mean between the current <emph>
+<attributes>
+</attributes>
 partial
 </emph>
  mark and the previous <emph>
+<attributes>
+</attributes>
 total
 </emph>
  mark over the <textbf>
+<attributes>
+</attributes>
 Decay Factor (DF)
 </textbf>
  <math>$\mathbf{\Phi }$</math>, that it’s different for every <math>$n$</math>. 
@@ -551,6 +626,8 @@ As we explained with examples at the beginning of <ref>
 
 </ref>
  section, <emph>
+<attributes>
+</attributes>
 DF
 </emph>
  <math>$\Phi $</math> must depend on the relative number of changes between subsequent revisions. <accapo>Doing so <math>$\Phi_n$</math> can be expressed as: 
@@ -560,6 +637,8 @@ DF
 </par>
 <par>
  where <math>$\lambda_{n_{tot}}$</math> is given by the partial sum of all the changes from the beginning to the n-th version <emph>
+<attributes>
+</attributes>
 included
 </emph>
 : 
@@ -569,6 +648,8 @@ included
 </par>
 <par>
  The exponent <math>$D$</math> can be determined a posteriori. Let’s analyze the behavior of the <emph>
+<attributes>
+</attributes>
 DF
 </emph>
  <math>$\Phi $</math> .<accapo>
@@ -576,6 +657,9 @@ DF
 <par>
 <itemize>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 If the n-th revision of the document introduces small changes compared to all the previous ones of other users, then <math>$\Phi_n \sim 1$</math>. Thus, old votes will be mediated with new votes with almost the same weight in formula <ref>
 <attributes>
@@ -589,6 +673,9 @@ If the n-th revision of the document introduces small changes compared to all th
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 If the n-th revision of the document introduces a number of changes of the order of the partial sum of the previous ones, <math>$\lambda_{\left(n-1\right)_{tot}}$</math>, then <math>$\Phi_n \sim \left(\frac{1}{2}\right)^A$</math>. In fact: 
 </par>
@@ -601,6 +688,9 @@ If the n-th revision of the document introduces a number of changes of the order
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 Finally, if the n-th revision introduces a number of changes really bigger than the partial sum of all the previous ones, <math>$\Phi_n \rightarrow 0$</math>. Because <math>$\lambda_n$</math> is included in <math>$\lambda_{n_{tot}}$</math>, to make <math>$\Phi \rightarrow 0$</math> the n-th changes must be a really bend in the document. In this case old votes are practically deleted from the weighted average as eq. <ref>
 <attributes>
@@ -635,6 +725,9 @@ Now we have a clear view of how votes are scaled over the Chain of Changes, we m
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:s_decay</label>
+</attributes>
 
 </label>
  
@@ -657,6 +750,8 @@ As we said in section <ref>
 </attributes>
 <par>
  We know how to calculate <math>$\sigma $</math> for every <emph>
+<attributes>
+</attributes>
 single
 </emph>
  version from equations <ref>
@@ -681,6 +776,8 @@ single
 
 </pageref>
 . Consider a stack of revisions that begins with a new document. For every version, excepted the current, we can calculate che <emph>
+<attributes>
+</attributes>
 partial
 </emph>
  <math>$\sigma $</math> and we call that <math>$\sigma_n$</math>. 
@@ -690,6 +787,8 @@ partial
 </par>
 <par>
  where <math>$N_i$</math> is the number of votes to the n-th version, <math>$\sigma_i$</math> and <math>$\alpha_i$</math> are related to the single vote and user. First of all, note that for <textit>
+<attributes>
+</attributes>
 every version
 </textit>
  the overall <math>$\sigma_n$</math> is calculated using only votes given to that version and that the partial average of marks <math>$\bar{V_n}$</math> is used, not the total average <math>$\tilde{V_n}$</math>. 
@@ -707,6 +806,8 @@ The calculation for past versions can be done only one time because data used do
 </attributes>
 <par>
  Now, as in the case of V Decay, we have to calculate the <emph>
+<attributes>
+</attributes>
 total
 </emph>
  <math>$\sigma $</math> , called <math>$\tilde{\sigma_n}$</math>, starting from the first version. 
@@ -742,6 +843,9 @@ total
 </attributes>
 <par>
 <label>
+<attributes>
+<label>sec:after_stable</label>
+</attributes>
 
 </label>
  So far we have considered decays starting from the creation of the document, so that <math>$\tilde{V}_1 = \bar{V}_1$</math> and <math>$\tilde{\sigma }_1 = \sigma_1$</math>. If a document is modified after a version marked as stable, its vote must influence the later calculations on new revisions: the work on the document does not restart from the beginning. All the formulas and decays described previously are valid with a change: 
@@ -755,18 +859,27 @@ total
 <par>
 <itemize>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 <math>$\Theta $</math> could depend on the number of characters of the stable version. The longer the latest stable version is, the more its votes are important. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 <math>$\Theta $</math> could be a fixed parameter, chosen a posteriori 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 <math>$\Theta $</math> could depend on the number of users have voted the stable version. The more it has been voted, the less must lose importance. 
 </par>
@@ -788,15 +901,26 @@ total
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:reaching_thre</label>
+</attributes>
 
 </label>
  Let’s now focus on the mechanism that makes a modified document reaching the threshold of <math>$\boldsymbol {\sigma }$</math> (<math>$\boldsymbol {\sigma_s}$</math>), i.e. when the latest revision becomes a stable milestone. <accapo>Every time the latest version receives a new vote: 
 </par>
 <par>
 <enumerate>
+<attributes>
+<type>None</type>
+</attributes>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 the <emph>
+<attributes>
+</attributes>
 partial
 </emph>
  average of marks <math>$\bar{V}_n$</math> is updated 
@@ -804,8 +928,13 @@ partial
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 the <emph>
+<attributes>
+</attributes>
 partial
 </emph>
  <math>$\sigma_n$</math> is updated (as descrided in section <ref>
@@ -820,8 +949,13 @@ partial
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 the <emph>
+<attributes>
+</attributes>
 total
 </emph>
  <math>$\tilde{\sigma }_n$</math> is updated by formula <ref>
@@ -836,20 +970,34 @@ total
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 new value of <math>$\tilde{\sigma }_n$</math> is compared to <math>$\sigma_s$</math> 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 if <math>$\tilde{\sigma }_n \geq \sigma_s$</math> the latest version must be labeled as stable because it has been sufficently evaluated: 
 </par>
 <par>
 <enumerate>
+<attributes>
+<type>None</type>
+</attributes>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 the <emph>
+<attributes>
+</attributes>
 total
 </emph>
  average of marks <math>$\tilde{V_n}$</math> is calculated by formula <ref>
@@ -864,12 +1012,18 @@ total
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 the final mark is published on the page and it’s no more secret. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 all calculations to update users’ coefficient are trigged as we will se in section <ref>
 <attributes>
@@ -890,18 +1044,30 @@ all calculations to update users’ coefficient are trigged as we will se in sec
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 polling can be stopped or no stopped. There are two scenery: 
 </par>
 <par>
 <enumerate>
+<attributes>
+<type>None</type>
+</attributes>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 polling is stopped: reaching the threshold <math>$\sigma_s$</math> the docuement has been sufficently evaluated. The final vote remains immutable until new revisions come. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 polling is not stopped: new votes for the stable version are computed. <math>$\bar{V_n}$</math> and <math>$\tilde{V}_n$</math> are updated, but <math>$\sigma_n$</math> and <math>$\tilde{\sigma }_n$</math> are not. For every new vote, <math>$\sigma_i$</math> is calculated by formula <ref>
 <attributes>
@@ -933,12 +1099,18 @@ This point is not so clear: polling could continue, but could <math>$\sigma $</m
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 if <math>$\tilde{\sigma }_n \leq \sigma_s$</math> the threshold has not be reached yet. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 when a new vote is received and we return to point 1. 
 </par>
@@ -953,25 +1125,40 @@ when a new vote is received and we return to point 1.
 </par>
 <par>
 <enumerate>
+<attributes>
+<type>None</type>
+</attributes>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 the definitive <math>$\bar{V}_{n-1}$</math> is calculated. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 the definitive <math>$\tilde{V}_{n-1}$</math> is calculated with the correct DF <math>$\Phi_{n-1}$</math>. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 the definitive <math>$\sigma_{n-1}$</math> is calculated given the definitive <math>$\bar{V}_{n-1}$</math>. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 the definitive <math>$\tilde{\sigma }_{n-1}$</math> is calculated given the correct DF <math>$\Phi_{n-1}$</math>. 
 </par>
@@ -994,10 +1181,17 @@ the definitive <math>$\tilde{\sigma }_{n-1}$</math> is calculated given the corr
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:choose_sigma</label>
+</attributes>
 
 </label>
  Choosing the right <math>$\sigma_s$</math> threshold of every document is the key of all <textbf>
+<attributes>
+</attributes>
 <textit>
+<attributes>
+</attributes>
 WikiRating 
 </textit>
 
@@ -1007,24 +1201,36 @@ system. This parameter is not fixed and it could be determined by some dynamical
 <par>
 <itemize>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 <math>$\sigma_s$</math> could depend on the number of visitors on the page. The more users have viewed a page, the more it’s necessary a depth evaluation. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 <math>$\sigma_s$</math> could depend on the category of the subject of the document 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 <math>$\sigma_s$</math> could depend on the number on internal and external links to the page. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 <math>$\sigma_s$</math> must be linked also to the history of a document. When a page is created from scratch <math>$\sigma_s$</math> should be high, because it should be more difficult to reach the first stable version than to modify later the document. Then <math>$\sigma_s$</math> for following revisions could depend on the number of users involved in the writing of the document or on the lenght of it. 
 </par>
@@ -1055,6 +1261,9 @@ In general the more a page is important for the platform, the more <math>$\sigma
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:change_par</label>
+</attributes>
 
 </label>
  When a stack of revisions become stable, users’ work has been carefully evaluated: it’s time to change users’ trust coefficient to reflect their action within this document. As we described in section <ref>
@@ -1074,6 +1283,9 @@ In general the more a page is important for the platform, the more <math>$\sigma
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:deltaa</label>
+</attributes>
 
 </label>
  
@@ -1087,20 +1299,31 @@ In general the more a page is important for the platform, the more <math>$\sigma
 <par>
 <itemize>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 In our model, since the <math>$\alpha $</math> coeffient is related to the expected rank of the user if evaluated by other users, <math>$\Delta a$</math> must be proportional to the difference between the user’s current <math>$\alpha $</math> and the average mark assigned to his work, <math>$\Delta V = ( \bar{V} - \alpha )$</math>. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 Then <math>$\Delta a$</math> should depend on the importance of the user’s work in the overall document, thus on the ration <math>$\lambda_n / \mu_{tot}$</math>, where <math>$\lambda_n$</math> is the number of changes by the user and the <math>$\mu_{tot}$</math> is the total number of characters of the document. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 Also <math>$\sigma $</math> of votes given to the user could influence the width of <math>$\Delta a$</math>. Note that we are considering the <emph>
+<attributes>
+</attributes>
 partial
 </emph>
  <math>$\sigma $</math> or <math>$\sigma_n$</math> of the user’s version, as calculated in formula <ref>
@@ -1111,6 +1334,8 @@ partial
 
 </ref>
 . If a lot of trusted users vote the document, <math>$\Delta a$</math> should be more important. To eliminate the influence of the number of voters to this parameter we should use the <emph>
+<attributes>
+</attributes>
 reduced
 </emph>
  <math>$\sigma $</math> , <math>$\mathring {\sigma }_n$</math>: 
@@ -1129,9 +1354,13 @@ reduced
 </par>
 <par>
 When a user writes a revision for a document, every subsequent version is related in some measure with his work. Thus, to evaluate the writing qualities of a user we must consider not only the votes assigned to his version but also all the votes given to subsequent versions till the stable one. Obviously the importance of following versions’ votes must be related to the number of changes <emph>
+<attributes>
+</attributes>
 from
 </emph>
  the first user’s version. We need a kind of <emph>
+<attributes>
+</attributes>
 Forward Decay
 </emph>
  for <math>$\Delta a$</math> calculation. 
@@ -1173,6 +1402,8 @@ Forward Decay
 </attributes>
 <par>
  Now let’s consider versions after Alice’s work. Starting with the first version after Alice’s version we can calculate every <emph>
+<attributes>
+</attributes>
 partial
 </emph>
  <math>$\Delta \bar{a}_j$</math> as: 
@@ -1188,6 +1419,8 @@ partial
 </par>
 <par>
 <math>$\mathbf{\Psi_j}$</math> is the Decay Factor (DF) that weighs as usually the importance of following versions (instead of <math>$\Phi_n$</math> that is used with the previous versions). This DF depend on the number of changes of the j-th version related to the total number of changes <emph>
+<attributes>
+</attributes>
 from
 </emph>
  Alice’s version <math>$\lambda_n$</math>. 
@@ -1227,6 +1460,9 @@ If Alice has written more than once in a single chain of changes:
 <par>
 <itemize>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 <math>$\Delta \tilde{a}_n$</math> is calculated for every Alice’s version with formula <ref>
 <attributes>
@@ -1240,6 +1476,9 @@ If Alice has written more than once in a single chain of changes:
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 after every Alice’s version <math>$\Delta \bar{a}_j$</math> is calculated with the Forward Decay process with formula <ref>
 <attributes>
@@ -1271,6 +1510,9 @@ after every Alice’s version <math>$\Delta \bar{a}_j$</math> is calculated with
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:deltab</label>
+</attributes>
 
 </label>
  The <math>$b$</math> parameter measures the user’s ability to judge other users’ works. This parameter is important because a lot of users on the platform are only viewers and not writers: their <math>$\alpha $</math> is fundamental because they are who votes the documents, hence it has to reflect the quality of their actions. 
@@ -1284,6 +1526,9 @@ after every Alice’s version <math>$\Delta \bar{a}_j$</math> is calculated with
 <par>
 <itemize>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 First of all, an important parameter is the deviation of the user’s vote from the mean of votes. If the vote is too distant from the mean it could imply that the user is not good at evaluate properly the document. We could define a parameter <math>$\varphi $</math> calculated as: 
 </par>
@@ -1292,9 +1537,13 @@ First of all, an important parameter is the deviation of the user’s vote from 
 </par>
 <par>
  where <math>$G$</math> is a parameter determined a posteriori and <math>$\delta $</math> is the <emph>
+<attributes>
+</attributes>
 standard deviation
 </emph>
  of votes assigned to a <emph>
+<attributes>
+</attributes>
 single
 </emph>
  version: 
@@ -1304,6 +1553,8 @@ single
 </par>
 <par>
  where <math>$N$</math> is the number of votes and <math>$\bar{V}$</math> is the <emph>
+<attributes>
+</attributes>
 partial
 </emph>
  average of votes of the current version. <math>$\Delta V$</math> is the absoulute value of the difference between the vote <math>$V_i$</math> in exam and <math>$\bar{V}$</math>: 
@@ -1317,24 +1568,36 @@ partial
 <par>
 <itemize>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 if <math>$\Delta V < \delta $</math>, <math>$\varphi $</math> is always less then 1 and positive. Thus <math>$\Delta b\propto \varphi $</math> is positive and user’s <math>$\alpha $</math> increases. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 if <math>$\delta < \Delta V < 2\delta $</math>, <math>$\varphi $</math> is negative and less then 1. Thus <math>$b$</math> decreases by a small amount and <math>$\alpha $</math> decreases. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 if <math>$\Delta V > 2\delta $</math>, <math>$\varphi $</math> is negative and greater then 1. So <math>$b$</math> decreases much and so does <math>$\alpha $</math> . 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 finally is <math>$\Delta V \simeq \delta $</math> then <math>$\varphi \simeq 0$</math>. <math>$b$</math> and <math>$\alpha $</math> doesn’t change because the vote is distributed normally. 
 </par>
@@ -1347,6 +1610,9 @@ finally is <math>$\Delta V \simeq \delta $</math> then <math>$\varphi \simeq 0$<
 
 </item>
 <item>
+<attributes>
+<term>None</term>
+</attributes>
 <par>
 Also user’s <math>$\alpha $</math> is important to measure <math>$\Delta b$</math>. If a trusted user votes far from the average is little probable that he has judged in the wrong way: we trust that user! Variations of <math>$b$</math> linked with the distribution of votes must be weighted by user’s <math>$\alpha $</math> in this way: 
 </par>
@@ -1372,6 +1638,8 @@ Also user’s <math>$\alpha $</math> is important to measure <math>$\Delta b$</m
 </attributes>
 <par>
  Given a Chain of Changes between two stable versions and a specific user that has partecipated in the poll, we calculate <math>$\Delta b_n$</math> for each of his vote using the <emph>
+<attributes>
+</attributes>
 partial
 </emph>
  average of marks <math>$\bar{V_n}$</math> of every different version: 
@@ -1384,6 +1652,8 @@ partial
 </par>
 <par>
  Remeber that every user can vote only one time a revision but can vote more than one in Chain of Changes. Then <math>$\Delta b_n$</math> are summed up to make <emph>
+<attributes>
+</attributes>
 total
 </emph>
  <math>$\Delta b$</math> of a single user: 
@@ -1406,6 +1676,9 @@ total
 </attributes>
 <par>
  <label>
+<attributes>
+<label>sec:gamma</label>
+</attributes>
 
 </label>
  User’s activity coefficient <math>$\gamma $</math> is important because it influences the size of the variation of <math>$a$</math> and <math>$b$</math>, so it directly influences changes of <math>$\alpha $</math> . The logic behind the calculations is that if a user is active we can change a lot his rating because it is frequently updated. If a user is inactive changes must occur more slowly because we don’t know when coefficients will be updated again and it could be not in the short period. Activity coefficient could be calcaluted as: 
@@ -1447,8 +1720,13 @@ another fixed period of time could be chosen
 <par>
 <description>
 <item>
+<attributes>
+<term>Automatic</term>
+</attributes>
 <par>
 The <math>$\sigma $</math> <emph>
+<attributes>
+</attributes>
 Threshold
 </emph>
  mechanism tries to automate the determination of the stability of the documents. We decide to link stability with the quality of the overall judgement in the sense described in section <ref>
@@ -1470,14 +1748,23 @@ Threshold
 
 </item>
 <item>
+<attributes>
+<term>Expandable</term>
+</attributes>
 <par>
 For how it is build, <textbf>
+<attributes>
+</attributes>
 <textit>
+<attributes>
+</attributes>
 WikiRating 
 </textit>
 
 </textbf>
 system is only a valid <emph>
+<attributes>
+</attributes>
 base
 </emph>
  for a more complex and complete rating system. A lot of parameters can be further modeled and a lot of mechanism have to be developed more. 
@@ -1485,18 +1772,27 @@ base
 
 </item>
 <item>
+<attributes>
+<term>Flexible</term>
+</attributes>
 <par>
 The system has 13 parameters that influence the calculation to be determined a posteriori with tests and simulations. This increases a lot the flexibility of the system. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>Scalable</term>
+</attributes>
 <par>
 Calculations involved in the system have been thought keeping in mind computational complexity. We try to minimize the number of necessary operations. 
 </par>
 
 </item>
 <item>
+<attributes>
+<term>Fair</term>
+</attributes>
 <par>
 The system tries to evaluate fairly the quality of every user and of every document. The more a user is active, the more he can improve his reputation. Users’ engagement is prized and measured. Document’s reliability is evaluated thoughtful and we try to discourage bad polling. 
 </par>
@@ -1517,9 +1813,16 @@ The system tries to evaluate fairly the quality of every user and of every docum
 <par>
 <description>
 <item>
+<attributes>
+<term>Number of users</term>
+</attributes>
 <par>
 To work correctly, <textbf>
+<attributes>
+</attributes>
 <textit>
+<attributes>
+</attributes>
 WikiRating 
 </textit>
 
@@ -1529,6 +1832,9 @@ system needs a lot of users and a lot of votes to every document. Only with a lo
 
 </item>
 <item>
+<attributes>
+<term>Review ability</term>
+</attributes>
 <par>
 Users’ ability to review other works measurament (See section <ref>
 <attributes>

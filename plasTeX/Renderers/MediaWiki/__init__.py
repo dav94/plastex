@@ -102,7 +102,7 @@ class XMLRenderer(Renderer):
     def default(nself,node):
         s = []
         s.append('<%s>' % node.nodeName)
-        if node.hasAttributes() and len(node.attributes)>1:
+        if node.hasAttributes() :
             s.append('<attributes>')
             for key, value in node.attributes.items():
                 if key == 'self':
