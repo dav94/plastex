@@ -89,7 +89,7 @@ class MediaWikiRenderer (Renderer):
     def do_paragraph(self,node):
         self.sectioning(node,'paragraph')
         return u''
-    ############################
+    #################################################
     
     #subparagraph are not node of the section tree
     def do_subparagraph(self,node):
@@ -105,6 +105,9 @@ class MediaWikiRenderer (Renderer):
         content = unicode(node)
         return u'%s' % content
 
+
+    ################################################
+    #Formatting
     def do_par(self, node):
         s = []
         s.append(u'\n\n')
@@ -191,9 +194,27 @@ class MediaWikiRenderer (Renderer):
 
     def do_quotation(self, node):
         s = []
-        s.append(u'')
+        s.append(u'<blockquote>')
         s.append(unicode(node))
-        return u'<blockquote>'.join(s)+'</blockquote>';
+        s.append(u'</blockquote>')
+        return u''.join(s)
+
+    def do_centering(self, node):
+        s = []
+        s.append(u'<div style="text-align:center;">')
+        s.append(unicode(node))
+        s.append(u'</div>')
+        return u''.join(s)
+
+    def do_flushright(self, node):
+        s = []
+        s.append(u'<div style="text-align:right;">')
+        s.append(unicode(node))
+        s.append(u'</div>')
+        return u''.join(s)
+
+    def do_flushleft(self, node):
+        return unicode(node)
 
     ##########################################
     #Image tags
@@ -214,7 +235,8 @@ class MediaWikiRenderer (Renderer):
     #     s.append('end_caption')
     #     return u''.join(s)
 
-    ##########################################
+
+    ###################################################
     #Math tags
     def do_equation(self, node): #TBD
         begin_tag = None
@@ -281,6 +303,7 @@ class MediaWikiRenderer (Renderer):
     do_ensuremath = do_math
     ###############################################
     
+    
 
 class XMLRenderer(Renderer):
 
@@ -334,6 +357,12 @@ class XMLRenderer(Renderer):
     def backslash(self,node):
         return u"<accapo>"
 
+    def do_centering(self, node):
+        s = []
+        s.append(u'<div style="text-align:center;">')
+        s.append(unicode(node))
+        s.append(u'</div>')
+        return u''.join(s)
 
     def do_math(self, node): #TBD
         tag = None
@@ -390,7 +419,7 @@ class XMLRenderer(Renderer):
 
     do_ensuremath = do_math
 
-    def do_equation(self, node): #TBD
+    def do_equation(self, node):
         begin_tag = None
         end_Tag = None
         label_tag = None
@@ -433,4 +462,5 @@ class XMLRenderer(Renderer):
     do_eqnarray = do_equation
     do_matrix = do_equation
     do_array = do_equation
-
+        
+ 
