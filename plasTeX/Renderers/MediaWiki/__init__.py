@@ -1,5 +1,6 @@
 import string,re
 from plasTeX.Renderers import Renderer
+from PageTree import PageTree
 
 class MediaWikiRenderer (Renderer):
 
@@ -22,7 +23,6 @@ class MediaWikiRenderer (Renderer):
         'at': '@',
         'backslash': '\\',
     }
-    last_section = ''
 
     def __init__(self, *args, **kwargs):
         Renderer.__init__(self, *args, **kwargs)
@@ -36,6 +36,8 @@ class MediaWikiRenderer (Renderer):
         self['default-layout'] = self['document-layout'] = self.default
         self.footnotes = []
         self.blocks = []
+        #tree object
+        self.tree = PageTree()
 
     def default(self, node):
         s = []
@@ -43,6 +45,28 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         s.append('</%s>' % node.nodeName)
         return u''.join(s)
+
+
+    def do_textDefault(self, node):
+        return node 
+
+
+    #sectioning
+    def do_section(self,node):
+        title = node.attributes['title']
+        #adding index to parent
+        self.tree.addIndexParentPage(title)
+        #creation of the new page
+        self.tree.createPage(title,'section')
+        #content processing
+        text = unicode(node)
+        #adding text to current page
+        self.tree.addTextCurrentPage(text)
+        #exiting the section
+        self.tree.exitPage()
+        return u''
+
+
 
     def do_equation(self, node):
     	s = []
@@ -52,9 +76,7 @@ class MediaWikiRenderer (Renderer):
         #endtah
         s.append('</dmath>')
         return u''.join(s)
-
-    def do_textDefault(self, node):
-        return node  
+    
 
     def do_document(self,node):
         content = unicode(node)
@@ -82,22 +104,6 @@ class MediaWikiRenderer (Renderer):
 
     do_emph = do_textbf
 
-    def do_section(self, node):
-        self.last_section = node.attributes["title"]
-    	s=[]
-    	s.append(u'[[')
-    	s.append(u'%s' % self.last_section)
-    	s.append(u']]')
-    	s.append(unicode(node))
-    	return u''.join(s)
-
-    def do_subsection(self,node):
-    	s=[]
-    	s.append(u'[[')
-    	s.append(u'%s' % (self.last_section+"/"+ node.attributes["title"]))
-    	s.append(u']]')
-    	s.append(unicode(node))
-    	return u''.join(s)
 
 
 

@@ -27,7 +27,7 @@ class PageTree (object):
 		newurl = self.current_url+"/"+title
 		p = Page(newurl,page_type)
 		self.index[self.current][title]={}
-		self.pages[newurl].append(p)
+		self.pages[newurl] = p
 		#updates current
 		self.previous= self.current
 		self.previous_url= self.current_url
