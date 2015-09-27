@@ -112,6 +112,19 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         return u''.join(s)
 
+    def do_label(self,node):
+        s = []
+        s.append(u'<%s>' % node.nodeName)
+        s.append(unicode(node))
+        s.append(u'</%s' % node.nodeName)
+
+    #def do_math(self, node): #TBD
+        #s = []
+        #s.append('<%s>' % node.nodeName)
+        #for key, value in node.attributes.items():
+        #return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', node.source)+'</math>'
+
+    #do_ensuremath = do_math
 
 
 
@@ -151,13 +164,19 @@ class XMLRenderer(Renderer):
     def backslash(self,node):
         return u"<accapo>"
 
-    def do_math(self, node): #TBD
+    def do_label(self,node):
         s = []
-        s.append('<%s>' % node.nodeName)
-        
+        s.append(u'<%s>' % node.nodeName)
+        s.append(unicode(node))
+        s.append(u'</%s' % node.nodeName)
+
+    #def do_math(self, node): #TBD
+        #s = []
+        #s.append('<%s>' % node.nodeName)
+        #for key, value in node.attributes.items():
         #return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', node.source)+'</math>'
 
-    do_ensuremath = do_math
+    #do_ensuremath = do_math
     
     def do_equation(self, node): #TBD
         s = u'   %s' % re.compile(r'^\s*\S+\s*(.*?)\s*\S+\s*$', re.S).sub(r'\1', node.source)
