@@ -16,11 +16,16 @@ class Page(object):
 	def addIndex(self, ind):
 		self.index.append(ind)
 
-
+	''' This method insert the text of subpages in this page if his level is 
+	greater than the level parameter.
+	It requires the dictionary of pages.'''
 	def collapseText(self,level,pages_dict):
 		if(self.level<level):
 			for subpage in self.index:
 				pages_dict[subpage].collapseText(level,pages_dict)
+				#the subpages'index is created
+				for p in self.index:
+					self.text += '\n[['+p+']]'
 		else:
 			#we have to managed the text
 			for subpage in self.index:

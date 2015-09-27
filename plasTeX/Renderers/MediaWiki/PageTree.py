@@ -11,7 +11,7 @@ class PageTree (object):
 		self.pages = {}
 		#ROOT PAGE
 		self.index['ROOT']={}
-		r = Page('ROOT','root')
+		r = Page('ROOT','root',-1)
 		self.pages['ROOT']= r
 
 		#indexes
@@ -25,13 +25,18 @@ class PageTree (object):
 	in his enviroment setting current variables'''
 	def createPage(self, title,page_type):
 		newurl = self.current_url+"/"+title
-		p = Page(newurl,page_type)
 		#finding the right dictionary
 		path = unicode(self.current_url).split('/')
+		#finding level
+		level = len(path)-1
+		#create new page	
+		p = Page(newurl,page_type,level)
+		#update index
 		cindex = self.index
 		for i in range(0,len(path)):
 			cindex = cindex[path[i]]
 		#now cindex has the current dict
+		#and new key is inserted
 		cindex[title]={}
 		#add pages to pages index
 		self.pages[newurl] = p
