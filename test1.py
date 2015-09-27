@@ -14,3 +14,12 @@ rend = XMLRenderer()
 rend.render(document2)
 
  
+f2 = open('test.tex','r')
+text2 = f.read()
+tex3 = TeX()
+tex3.ownerDocument.config['files']['split-level'] = -100
+tex3.ownerDocument.config['files']['filename'] = 'test.mw'
+tex3.input(text)
+document3 = tex3.parse()
+rend = WikiRenderer()
+rend.render(document3)
