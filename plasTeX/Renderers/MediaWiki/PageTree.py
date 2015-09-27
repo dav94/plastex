@@ -55,7 +55,3 @@ class PageTree (object):
 		self.current = self.previous
 		self.current_url= self.previous_url
 
-
-	def getXML():
-		pass
-

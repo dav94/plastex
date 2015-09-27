@@ -89,23 +89,15 @@ class MediaWikiRenderer (Renderer):
     def do_paragraph(self,node):
         self.sectioning(node,'paragraph')
         return u''
-
-    def do_subparagraph(self,node):
-        self.sectioning(node,'do_subparagraph')
-        return u''
-
-
-
     ############################
-
-
-    def do_equation(self, node):
-    	s = []
-        s.append('<dmath>')
-        #child nodes
+    
+    #subparagraph are not node of the section tree
+    def do_subparagraph(self,node):
+        s =[]
+        s.append('\n\'\'\'')
+        s.append(unicode(node.attributes['title']))
+        s.append('\'\'\'\'')
         s.append(unicode(node))
-        #endtah
-        s.append('</dmath>')
         return u''.join(s)
     
 
@@ -136,13 +128,11 @@ class MediaWikiRenderer (Renderer):
     do_emph = do_textit
     do_itshape=do_textit
    
-
     def do__backslash(self,node):
         s = []
         s.append(u'\n')
         s.append(unicode(node))
         return u''.join(s)
-
 
     def do_newpage(self,node):
         s = []
@@ -206,15 +196,80 @@ class MediaWikiRenderer (Renderer):
         s.append(u'</blockquote>')
         return u''.join(s)
 
-    do_quote=do_quotation
-    do_verse=do_quotation
-    
     def do_centering(self, node):
         s = []
         s.append(u'<div style="text-align:center;">')
         s.append(unicode(node))
         s.append(u'</div>')
         return u''.join(s)
+
+
+    ##########################################
+    #Math tags
+    def do_equation(self, node): #TBD
+        begin_tag = None
+        end_Tag = None
+        label_tag = None
+        structure_label_tag = None
+
+        #search \begin and end \tag
+        global_begin_tag = re.search(ur'\\\bbegin\b\{(.*?)\}|\\\(|\\\[', node.source)
+        global_end_tag = re.search(ur'\\\bend\b\{(.*?)\}|\\\)|\\\]', node.source)
+
+        #get \begin{tag} and \end{tag}
+        if global_begin_tag and global_end_tag:
+            begin_tag = global_begin_tag.group(0)
+            end_tag = global_end_tag.group(0)
+
+        #search equation tag
+        global_label_tag = re.search(ur'\\\blabel\b\{(.*?)\}', node.source)
+
+        if global_label_tag:
+            label_tag = global_label_tag.group(1)
+            structure_label_tag = global_label_tag.group(0)
+        else:
+            label_tag = ''
+            structure_label_tag = ''
+
+        s = node.source
+        s = s.replace(begin_tag, "")
+        s = s.replace(end_tag, "")
+        s = s.replace(structure_label_tag, "")
+
+        # check if label tag exist. If it does, creates the tag
+        if label_tag is not '':
+            label_tag = "<label> " + label_tag + " </label>"
+        else:
+            label_tag = ""
+
+        return '<math>'+ label_tag + s +'</math>'
+
+    do_displaymath = do_equation
+    do_enumerate = do_equation
+    do_eqnarray = do_equation
+    do_matrix = do_equation
+    do_array = do_equation
+
+    do_quote=do_quotation
+    do_verse=do_quotation
+
+    do_ensuremath = do_math
+
+    def do_math(self, node): #TBD
+        tag = None
+
+        #search content between $ $
+        global_tag = re.search(ur'\$(.*?)\$', node.source)
+
+        #get content between $ $
+        if global_tag:
+            tag = global_tag.group(1)
+        else:
+            tag = ''
+
+        s = tag
+        return '<math>'+ s +'</math>'
+    ###############################################
     
 
 class XMLRenderer(Renderer):
@@ -254,21 +309,109 @@ class XMLRenderer(Renderer):
     def backslash(self,node):
         return u"<accapo>"
 
-    def do_math(self, node): #TBD
-        s = []
-        s.append('<%s>' % node.nodeName)
-        return u''
-        #return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', node.source)+'</math>'
-
-    do_ensuremath = do_math
-    
-    def do_equation(self, node): #TBD
-        s = u'   %s' % re.compile(r'^\s*\S+\s*(.*?)\s*\S+\s*$', re.S).sub(r'\1', node.source)
-        return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', s)+'</math>'
     def do_centering(self, node):
         s = []
         s.append(u'<div style="text-align:center;">')
         s.append(unicode(node))
         s.append(u'</div>')
         return u''.join(s)
-    
+
+    def do_math(self, node): #TBD
+        tag = None
+
+        #search content between $ $
+        global_tag = re.search(ur'\$(.*?)\$', node.source)
+
+        #get content between $ $
+        if global_tag:
+            tag = global_tag.group(1)
+        else:
+            tag = ''
+
+        s = tag
+        return '<math>'+ s +'</math>'
+
+    # def do_displaymath(self, node):
+    #     begin_tag = None
+    #     end_Tag = None
+    #     label_tag = None
+    #     structure_label_tag = None
+
+    #     #search \begin,\(,\[ and \end,\),\] tags
+    #     global_begin_tag = re.search(ur'\\\bbegin\b\{(.*?)\}|\\\(|\\\[', node.source)
+    #     global_end_tag = re.search(ur'\\\bend\b\{(.*?)\}|\\\)|\\\]', node.source)
+
+    #     #get \begin{tag}... and \end{tag}...
+    #     if global_begin_tag and global_end_tag:
+    #         begin_tag = global_begin_tag.group(0)
+    #         end_tag = global_end_tag.group(0)
+
+    #     #search equation tag
+    #     global_label_tag = re.search(ur'\\\blabel\b\{(.*?)\}', node.source)
+
+    #     if global_label_tag:
+    #         label_tag = global_label_tag.group(1)
+    #         structure_label_tag = global_label_tag.group(0)
+    #     else:
+    #         label_tag = ''
+    #         structure_label_tag = ''
+
+    #     s = node.source
+    #     s = s.replace(begin_tag, "")
+    #     s = s.replace(end_tag, "")
+    #     s = s.replace(structure_label_tag, "")
+
+    #     # check if label tag exist. If it does, creates the tag
+    #     if label_tag is not '':
+    #         label_tag = "<label> " + label_tag + " </label>"
+    #     else:
+    #         label_tag = ""
+
+    #     return '<math>'+ label_tag + s +'</math>'
+
+    do_ensuremath = do_math
+
+    def do_equation(self, node):
+        begin_tag = None
+        end_Tag = None
+        label_tag = None
+        structure_label_tag = None
+
+        #search \begin and end \tag
+        global_begin_tag = re.search(ur'\\\bbegin\b\{(.*?)\}|\\\(|\\\[', node.source)
+        global_end_tag = re.search(ur'\\\bend\b\{(.*?)\}|\\\)|\\\]', node.source)
+
+        #get \begin{tag} and \end{tag}
+        if global_begin_tag and global_end_tag:
+            begin_tag = global_begin_tag.group(0)
+            end_tag = global_end_tag.group(0)
+
+        #search equation tag
+        global_label_tag = re.search(ur'\\\blabel\b\{(.*?)\}', node.source)
+
+        if global_label_tag:
+            label_tag = global_label_tag.group(1)
+            structure_label_tag = global_label_tag.group(0)
+        else:
+            label_tag = ''
+            structure_label_tag = ''
+
+        s = node.source
+        s = s.replace(begin_tag, "")
+        s = s.replace(end_tag, "")
+        s = s.replace(structure_label_tag, "")
+
+        # check if label tag exist. If it does, creates the tag
+        if label_tag is not '':
+            label_tag = "<label> " + label_tag + " </label>"
+        else:
+            label_tag = ""
+
+        return '<math>'+ label_tag + s +'</math>'
+
+    do_displaymath = do_equation
+    do_enumerate = do_equation
+    do_eqnarray = do_equation
+    do_matrix = do_equation
+    do_array = do_equation
+
