@@ -27,12 +27,12 @@ class MediaWikiRenderer (Renderer):
     def __init__(self, *args, **kwargs):
         Renderer.__init__(self, *args, **kwargs)
         # Load dictionary with methods
-       for key in dir(self):
+        for key in dir(self):
             if key.startswith('do__'):
                 self[self.aliases[key[4:]]] = getattr(self, key)
             elif key.startswith('do_'):
                 self[key[3:]] = getattr(self, key)
-                
+
         self['default-layout'] = self['document-layout'] = self.default
         self.footnotes = []
         self.blocks = []
