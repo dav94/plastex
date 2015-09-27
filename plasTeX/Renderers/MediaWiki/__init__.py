@@ -118,7 +118,8 @@ class MediaWikiRenderer (Renderer):
         return u''.join(s)    
 
     do_emph = do_textit
-
+    do_itshape=do_textit
+   
 
     def do__backslash(self,node):
         s = []
@@ -240,6 +241,6 @@ class XMLRenderer(Renderer):
         s = u'   %s' % re.compile(r'^\s*\S+\s*(.*?)\s*\S+\s*$', re.S).sub(r'\1', node.source)
         return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', s)+'</math>'
 
- 
+    
 
    
