@@ -177,7 +177,35 @@ class MediaWikiRenderer (Renderer):
     def do__tilde(self,node):
         return unicode(node)    
 
+    def do__dollar(self,node):
+        s=[]
+        return u'$'
 
+    def do__percent(self,node):
+        s=[]
+        return u'%'
+
+    def do__opencurly(self,node):
+        s=[]
+        return u'{'
+
+    def do__closecurly(self,node):
+        s=[]
+        return u'}'
+    
+    def do__hashmark(self,node):
+        s=[]
+        return u'#'
+
+    def do__underscore(self,node):
+        s=[]
+        return u'_'
+
+    def do__ampersand(self,node):
+        s=[]
+        return u'&'
+    
+    
 
 class XMLRenderer(Renderer):
 
@@ -228,5 +256,6 @@ class XMLRenderer(Renderer):
         s = u'   %s' % re.compile(r'^\s*\S+\s*(.*?)\s*\S+\s*$', re.S).sub(r'\1', node.source)
         return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', s)+'</math>'
 
-    
+ 
 
+   
