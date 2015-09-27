@@ -19,12 +19,16 @@ class Page(object):
 
 	def collapseText(self,level,pages_dict):
 		if(self.level<level):
-			for subpage in index:
+			for subpage in self.index:
 				pages_dict[subpage].collapseText(level,pages_dict)
 		else:
 			#we have to managed the text
-			if len(index)>0:
-				for subpage in index:
-					pages_dict[subpage].collapseText(level,pages_dict)
-			
-
+			for subpage in self.index:
+				t = pages_dict[subpage].collapseText(level,pages_dict)
+				#add text
+				self.text+= '\n'+t
+			#Creation of current page'title
+			title = "="*(level-self.level+1)+self.title+"="*(level-self.level+1)
+			self.text = title+ "\n"+ self.text
+			#return the text
+			return self.text
