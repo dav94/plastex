@@ -203,6 +203,17 @@ class MediaWikiRenderer (Renderer):
         s.append(u'</div>')
         return u''.join(s)
 
+    def do_flushright(self, node):
+        s = []
+        s.append(u'<div style="text-align:right;">')
+        s.append(unicode(node))
+        s.append(u'</div>')
+        return u''.join(s)
+
+    def do_flushleft(self, node):
+        return unicode(node)
+
+
 
     ##########################################
     #Math tags
@@ -253,7 +264,7 @@ class MediaWikiRenderer (Renderer):
     do_quote=do_quotation
     do_verse=do_quotation
 
-    do_ensuremath = do_math
+    
 
     def do_math(self, node): #TBD
         tag = None
@@ -269,6 +280,8 @@ class MediaWikiRenderer (Renderer):
 
         s = tag
         return '<math>'+ s +'</math>'
+
+    do_ensuremath = do_math
     ###############################################
     
 
@@ -414,4 +427,5 @@ class XMLRenderer(Renderer):
     do_eqnarray = do_equation
     do_matrix = do_equation
     do_array = do_equation
-
+        
+ 
