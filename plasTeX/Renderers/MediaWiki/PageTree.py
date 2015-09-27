@@ -70,7 +70,7 @@ class PageTree (object):
 		self.labels[label]= self.current_url
 
 	def getRef(self,label):
-		return self.media_urlss
+		return self.media_urls[self.labels[label]]
 
 
 	''' This method collapse the text contained in subpages 
@@ -78,5 +78,8 @@ class PageTree (object):
 	Tin pages with level<level_min is inserted an index of subpages. '''
 	def collapseText(self,level_min):
 		self.pages[self.doc_title].collapseText(level_min,self.pages,self.media_urls,'',{})
+		self.labels[label]= self.media_urls[self.labels[label]]
+
+	def fixReferences(self, )
 
 	
