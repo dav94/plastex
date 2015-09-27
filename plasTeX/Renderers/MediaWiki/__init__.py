@@ -89,7 +89,7 @@ class MediaWikiRenderer (Renderer):
     def do_paragraph(self,node):
         self.sectioning(node,'paragraph')
         return u''
-    ############################
+    #################################################
     
     #subparagraph are not node of the section tree
     def do_subparagraph(self,node):
@@ -105,6 +105,9 @@ class MediaWikiRenderer (Renderer):
         content = unicode(node)
         return u'%s' % content
 
+
+    ################################################
+    #Formatting
     def do_par(self, node):
         s = []
         s.append(u'\n\n')
@@ -215,7 +218,7 @@ class MediaWikiRenderer (Renderer):
 
 
 
-    ##########################################
+    ###################################################
     #Math tags
     def do_equation(self, node): #TBD
         begin_tag = None
