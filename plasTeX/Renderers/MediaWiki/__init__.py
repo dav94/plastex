@@ -245,8 +245,13 @@ class MediaWikiRenderer (Renderer):
         return u''.join(s)
 
     def do_hrulefill(self,node):
-        return u'-----'     
+        return u'-----'  
 
+    do_rule=do_hrulefill   
+
+    def do_textrm(self, node):
+        return unicode(node)
+        
     ##########################################
     #Image tags
 
@@ -487,5 +492,8 @@ class XMLRenderer(Renderer):
     do_eqnarray = do_equation
     do_matrix = do_equation
     do_array = do_equation
+
+  
+       
         
      
