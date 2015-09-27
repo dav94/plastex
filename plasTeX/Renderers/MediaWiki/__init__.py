@@ -279,6 +279,13 @@ class MediaWikiRenderer (Renderer):
         return u''.join(s)
     
     do_underbar=do_underline
+
+    def do_texttt(self,node):
+        s=[]
+        s.append(u"<tt>")
+        s.append(unicode(node))
+        s.append(u"</tt>")
+        return u''.join(s)  
         
     ##########################################
     #Image tags
@@ -518,6 +525,8 @@ class XMLRenderer(Renderer):
     do_eqnarray = do_equation
     do_matrix = do_equation
     do_array = do_equation
+
+      
 
 
    
