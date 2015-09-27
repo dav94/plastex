@@ -327,7 +327,7 @@ class MediaWikiRenderer (Renderer):
             end_tag = global_end_tag.group(0)
             s = s.replace(begin_tag, "")
             s = s.replace(end_tag, "")
-        elif global_dollars_search
+        elif global_dollars_search:
             dollars_tag = global_dollars_search.group(1)
             s = s.replace(dollars_tag, "")
 

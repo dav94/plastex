@@ -12,6 +12,9 @@ Testo del documento
 <par>
  Testo della sezione 
 </par>
+<par>
+<math> x=2 </math>
+</par>
 <subsection>
 <attributes>
 <toc>None</toc>

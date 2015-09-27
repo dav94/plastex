@@ -24,7 +24,7 @@ document3 = tex3.parse()
 rend = WikiRenderer("Test")
 rend.render(document3)
 #elaborazione
-rend.tree.collapseText(3)
+rend.tree.collapseText(4)
 rend.tree.fixReferences()
 xml = rend.tree.exportXML()
 o = open('test.mw','w')
