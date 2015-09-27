@@ -64,6 +64,10 @@ class PageTree (object):
 	def addLabel(self,label):
 		self.labels[label]= self.current_url
 
+	def getRef(self,label):
+		return self.labels[label]
+
+
 	''' This method collapse the text contained in subpages 
 	in the pages with level > level_min.
 	Tin pages with level<level_min is inserted an index of subpages. '''

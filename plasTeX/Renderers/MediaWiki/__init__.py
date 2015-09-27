@@ -119,6 +119,13 @@ class MediaWikiRenderer (Renderer):
         l = node.attributes['label']
         self.label(l)
 
+    def do_ref(self,node):
+        r = node.attributes['label']
+        return unicode(' (\ref{'+r+'}) ')
+
+    do_pageref = do_ref
+    do_vref = do_ref
+
 
     ################################################
     #Formatting
