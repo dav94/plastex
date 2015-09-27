@@ -70,9 +70,9 @@ class MediaWikiRenderer (Renderer):
         self.sectioning(node,'part')
         return u''
 
-    # def do_chapter (self,node):
-    #     self.sectioning(node,'chapter')
-    #     return u''
+    def do_chapter (self,node):
+        self.sectioning(node,'chapter')
+        return u''
 
     def do_section(self,node):
         self.sectioning(node,'section')
