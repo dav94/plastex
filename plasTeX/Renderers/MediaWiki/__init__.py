@@ -140,8 +140,22 @@ class MediaWikiRenderer (Renderer):
             s.append(self.list_level+t)
         self.list_level = self.list_level[:-1]
         return u'\n'.join(s)
-    
 
+    def do_enumerate(self,node):
+        s = []
+        self.list_level+='#'
+        for item in node.childNodes:
+            t=unicode(item)
+            s.append(self.list_level+t)
+        self.list_level = self.list_level[:-1]
+        return u'\n'.join(s)
+    
+    def do_description(self,node):
+        s = []
+        for item in node.childNodes:
+            t=unicode(item)
+            s.append(u';'+ str(item.attributes['term'])+":" +t)
+        return u'\n'.join(s)    
 
 
 
@@ -158,8 +172,7 @@ class XMLRenderer(Renderer):
         self.footnotes = []
         self.blocks = []
         self['\\']=self.backslash
-        #per test
-        self.list_level=''
+        
           
 
     def default(nself,node):
@@ -196,12 +209,4 @@ class XMLRenderer(Renderer):
         return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', s)+'</math>'
 
     
-    def do_enumerate(self,node):
-        s = []
-        self.list_level+='#'
-        for item in node.childNodes:
-            t=unicode(item)
-            s.append(self.list_level+t)
-        self.list_level = self.list_level[:-1]
-        return u'\n'.join(s)
     
