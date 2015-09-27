@@ -333,7 +333,7 @@ class XMLRenderer(Renderer):
                 if key == 'self':
                      continue
                 if key == 'file':
-                    s.append('%s]]' % unicode(value))
+                    s.append('%s|%s]]' % (unicode(value),unicode(node.parentNode.parentNode.previousSibling.lastChild)))
         return u''.join(s) 
 
     def default(nself,node):
