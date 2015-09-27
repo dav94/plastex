@@ -118,6 +118,8 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         return u''.join(s)
 
+    
+
 
 
 
@@ -134,7 +136,7 @@ class XMLRenderer(Renderer):
         self.footnotes = []
         self.blocks = []
         self['\\']=self.backslash
-    
+        self.itemize_level=''   
 
     def default(nself,node):
         s = []
@@ -160,7 +162,7 @@ class XMLRenderer(Renderer):
     def do_math(self, node): #TBD
         s = []
         s.append('<%s>' % node.nodeName)
-        
+        return ''
         #return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', node.source)+'</math>'
 
     do_ensuremath = do_math
@@ -168,3 +170,11 @@ class XMLRenderer(Renderer):
     def do_equation(self, node): #TBD
         s = u'   %s' % re.compile(r'^\s*\S+\s*(.*?)\s*\S+\s*$', re.S).sub(r'\1', node.source)
         return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', s)+'</math>'
+
+    def do_itemize(self,node):
+        s = []
+        self.itemize_level+'*'
+        for item in node.childNodes:
+            t=unicode(item)
+            s.append(self.itemize_level+t)
+        return u'\n'.join(s)
