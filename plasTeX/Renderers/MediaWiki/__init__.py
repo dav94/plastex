@@ -106,6 +106,27 @@ class MediaWikiRenderer (Renderer):
         return u'%s' % content
 
 
+    ###############################################
+    #references
+    ''' Method that insert label into PageTree'''
+    def label(self,lab):
+        #the reference to the current page is saved
+        self.tree.addLabel(lab)
+
+    ''' Labels are managed bey PageTree'''
+    def do_label(self,node):
+        #retriving label id
+        l = node.attributes['label']
+        self.label(l)
+
+    def do_ref(self,node):
+        r = node.attributes['label']
+        return unicode(' (\ref{'+r+'}) ')
+
+    do_pageref = do_ref
+    do_vref = do_ref
+
+
     ################################################
     #Formatting
     def do_par(self, node):
@@ -226,6 +247,19 @@ class MediaWikiRenderer (Renderer):
     def do_hrulefill(self,node):
         return u'-----'     
 
+    ##########################################
+    #Image tags
+
+    def do_includegraphics(self,node):
+        s = []
+        s.append('[[')
+        if node.hasAttributes():
+            for key, value in node.attributes.items():
+                if key == 'self':
+                     continue
+                if key == 'file':
+                    s.append('%s|%s]]' % (unicode(value),unicode(node.parentNode.parentNode.previousSibling.lastChild)))
+        return u''.join(s) 
 
     ###################################################
     #Math tags
@@ -310,7 +344,22 @@ class XMLRenderer(Renderer):
         self.blocks = []
         self['\\']=self.backslash
         
-          
+    def do_caption(self,node):
+        s = []
+        s.append("|")
+        s.append(unicode(node))
+        return u''.join(s)
+
+    def do_includegraphics(self,node):
+        s = []
+        s.append('[[')
+        if node.hasAttributes():
+            for key, value in node.attributes.items():
+                if key == 'self':
+                     continue
+                if key == 'file':
+                    s.append('%s|%s]]' % (unicode(value),unicode(node.parentNode.parentNode.previousSibling.lastChild)))
+        return u''.join(s) 
 
     def default(nself,node):
         s = []

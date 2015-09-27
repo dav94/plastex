@@ -43,6 +43,21 @@
 <math>  y = |y>  </math>
 </par>
 <par>
+<figure>
+<attributes>
+<loc>h!</loc>
+</attributes>
+<par>
+|A picture of a gull.
+</par>
+<par>
+<div style="text-align:center;">[[gull|A picture of a gull.]] </div>
+</par>
+
+</figure>
+
+</par>
+<par>
  The main purpose of this project is the creation of an automated system to evalute the reliability and quality of articles and pages on a wiki-style learning platform. 
 </par>
 <paragraph>
@@ -122,13 +137,7 @@ is identified by a unique ID and by two parameters that measures his performance
 </attributes>
 <par>
 <div style="text-align:center;"><par>
-<caption>
-<attributes>
-<toc>None</toc>
-</attributes>
-Trust distribution
-</caption>
-
+|Trust distribution
 </par>
 <par>
  <label>
@@ -591,12 +600,15 @@ system. PROVA
  
 </par>
 <par>
+<flushleft>
  The Decay of Votes or <emph>
 <attributes>
 </attributes>
 V Decay
 </emph>
  must give us a way to calculate the average mark of a stack of versions of a document given the votes and 
+</flushleft>
+
 </par>
 <par>
  the number of changes of every ring. We called this mechanism "decay" just because at every new step of the chain, all previous calculations have to be scaled by a particular factor to take part in the next computing. Proceeding this way, step by step, is the best practice to make the computations the less complex possible with the accumulating of revisions. 
