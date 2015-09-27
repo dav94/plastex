@@ -106,6 +106,14 @@ class MediaWikiRenderer (Renderer):
         return u''.join(s)
 
 
+    def do_newpage(self,node):
+        s = []
+        s.append(u'')
+        s.append(unicode(node))
+        return u''.join(s)
+
+
+
 
 
 class XMLRenderer(Renderer):
