@@ -1,0 +1,510 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{varioref}
+\pagestyle{headings}
+
+%opening
+\title{\textbf{WikiRating Proposition\\Version 0.2}}
+\author{\\Davide Valsecchi $<$valsecchi.davide94@gmail.com$>$
+\\Mario Marini $<$mamarini94@gmail.com$>$}
+
+\geometry{a4paper,top=4cm,bottom=4cm,left=3.5cm,%
+right=3.5cm,heightrounded,bindingoffset=5mm}
+
+\newcommand{\wir}{\textbf{\textit{WikiRating }}}
+\newcommand{\sg}{$\sigma$ }
+\newcommand{\al}{$\alpha$ }
+\newcommand{\ph}[1]{$\tilde{V}_#1$ }
+\newcommand{\pb}[1]{$\bar{V}_#1$ }
+\newcommand{\Pii}{$\Phi$ }
+\newcommand{\DPii}{\emph{DF} $\Phi$ }
+
+\begin{document}
+
+Ciao
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introduction}
+
+\begin{eqnarray}
+x = 2 //
+y = 3
+\end{eqnarray}
+
+\[ x = 2\]
+
+The main purpose of this project is the creation of an automated system to evalute the reliability and quality of articles and pages on a wiki-style learning platform.
+\paragraph{The Problem}
+In wiki-style platform, new contents have to be evaluated by expert users to become reliable and to be shared with the public. That work is fondamental to guarantee the
+correctness of the platform's content but could slow down the development of highly
+partecipated works with a lot of changes. Moreover finding a lot of experienced editors  
+in a big community could be really difficult. How can we ensure the quality of contents 
+and meanwhile make the system automatic?
+\paragraph{The Solution}
+Our base idea is measuring the trustworthiness of the users to evaluate their writing reliability and their ability to review other's works. Every document is voted by users and, using our estimate of their reliability, we can get an overall rating of it. 
+\\The complete history of the document is followed to have a precise determination of its quality: every version has a weight related to its importance in the total document. Then, we found a way to identify stable versions using the distribution of the voters and votes: a kind of limit that it has to be reached to guarantee that a sufficient number of users has rated the content. 
+\\Every user's action implies an adjustment of his rating, trying to measure his real reliability. In a system like this, the activity of the users is also important: more active users are a resource for the platform and have to be prized for their work.
+
+\newpage
+\section{The User} \label{sec:user}
+Every user of \wir is identified by a unique ID and by two parameters that measures his 
+performance: the trust (or reliability) coefficient ($\mathbf{\alpha}$) and the activity 
+coefficient ($\theta$).
+
+\subsection{Trust Coefficient}
+ This parameter is a number between 0 to 1, we call it $
+\alpha$. The higher it is, the more we can trust the user's judgements and we can consider 
+his writings correct.  This coefficient comes from the mean of Beta probability density 
+function.
+\begin{equation}
+B[x;a,b] = \frac{x^{a-1}\left(1-x\right)^{b-1}}{\displaystyle{\int_0^1 x^{a-1}\left(1-x\right)^{b-1}\, \mathrm{d}x}}
+\end{equation}
+\begin{equation}
+\alpha =\bar{x} = \frac{a}{a+b}
+\end{equation}
+\begin{figure}[!hpt]
+\centering
+
+\caption{Trust distribution}
+\label{fig:beta}
+\end{figure}
+\\ We can see that $\alpha$ depends on two parameter $a$ and $b$ that can vary  between 0 
+and arbitrary positive values. If $a$ is high, $\alpha$ tends to 1. If $b$ is high, $
+\alpha$ tends to 0. In the Figure \ref{fig:beta} we can see Beta distribution with 
+different $a,b$ combination: $a = b$ (blue), $a>b$ (pink), $a<b$ (green), $a>>b$ (dark 
+orange), $a<<b$ (orange).
+
+In our model we decide to link $a$ to the quality of user writing (evaluated by other 
+users as we'll describe in section \ref{sec:deltaa}, pag. \pageref{sec:deltaa}). The max value of $a$ is called $A_1$ and it has to be determined a posteriori. Then we substitute $b$ for $(A_2 - b)$ (where $A_2$ is a constant equal to the max value of $b$ ) 
+and we link $b$ to the reliability of user judgements.
+\begin{equation}
+\alpha =\bar{x} = \frac{a}{a+\left(A_2 - b\right)}
+\end{equation} Thus, with high $a$ and $b \rightarrow A_2$ the 
+trust coefficient tends to 1. Therefore, the trust coefficient depends on user writing and 
+user ability to evaluate other works on the platform. In the section \ref{sec:change_par} at page \pageref{sec:change_par}, we will describe how $a$ and $b$ are calculated and how they varies during user activity. 
+
+\subsection{Activity Coefficient}
+This coefficient measures the activity level of a user in the platform. We call this number $\gamma$. If the value is 
+between 0 and 1 the user is considered little active or inactive. If the value is between 
+1 to 2 the user is considered regular and if the value is greater than 2 he is regarded as 
+really active. This coefficient is important in the calculations to modify ths user's trust 
+coefficient, as we will see later.
+The activity coefficient is proportional to the ratio of the number of actions done by 
+the user over time. Furthermore this coefficient decreases quickly over the time if the user is absent from the platform (See section \ref{sec:deltab}, pag. \pageref{sec:deltab}).
+
+The initial values for the coefficients must be set properly according to our estimation 
+of the user's initial trust level. We can link it to domains of users' email. For example 
+accounts that use a recognized institutional domain (like \textit{@unimib.it}) will start 
+with a trust coefficient higher that account that are registered with a student domain 
+(like \textit{@campus.unimib.it}). That methods can be used to distinguish teachers from 
+students and from common users. The initial value of \al could also vary over time, 
+studying periodically the overall reliability of the users associated with every domain.
+
+\newpage
+\section{The Chain of Changes}\label{sec:chch}
+We want now to describe how the \wir system acts on the Chain of Changes (\textit{ChCh}) 
+of a wiki page or document.
+
+The history of a document can be described as a descendant chain. First of all a user 
+creates a new document, then another user makes changes on the top of the first version and saves it: a new ring of the chain is added. Every time an user works on that document  
+new subsequent rings are added, multiple branches are not allowed.
+
+Versions are not all equally important: in the life of a page there are periods of heavy 
+work and frequent changes and periods when the content is quite stable and definite. 
+Usually, in wiki platform, stable versions must be marked by expert editors who check the 
+document and decide that it is ready. In \wir system we thought about a threshold 
+mechanism able to decide automatically when a version must be marked as stable.\\
+
+Let's start introducing how the rating system works.
+
+\subsection{Marks} \label{sec:marks}
+Every registered user that visits a page can assign a vote between 1 to 10 
+that it is then scaled between 0 to 1 for the calculations. This mark refers to the latest 
+version of the document that is  always shown to visitors. Even if the last version is not 
+marked as stable, it must be shown to users (reporting that as a warning) because it has 
+to be evaluated. Votes are not shown on the page because other judgements must not be 
+influenced (See \ref{sec:reaching_thre}, pag. \pageref{sec:reaching_thre}).
+
+ Every vote is associated with user's trust coefficient that determines the weight of the 
+ mark. The global evaluation of \emph{the single version} is calculated as a weighted 
+ average of single votes over the trust coefficients:
+\begin{equation} \label{eq:v_medio}
+\bar{V} = \frac{\displaystyle{\sum_{i=1}^n \alpha_i \cdot V_i}}{\displaystyle{\sum_{i=1}^n \alpha_i}}
+\end{equation}
+where $V_i$ are the votes and $\alpha_i$ are trust coefficients of the users.
+
+So, let's make an example: Alice creates the page and receives some votes, then Bob makes 
+some changes and a new ring of the chain is created. Obviously new votes on Bob's version 
+not only evaluate Bob's work but also Alice's old work, depending on the number of Bob's 
+changes. Instead, votes of Alice's work are not related at all with Bob's subsequent editing 
+but cannot be thrown away because Bob has not created an entirely new document. We need a 
+new method to calculate global evaluation for the page and above all a criterion to 
+establish when a version is considered stable. Let's first explorate the latter.
+
+\subsection{Trustworthiness of Marks} \label{sec:sigma}
+Users are not all equally reliable: for example marks from an ungraduate student must be 
+less influential than marks from a teacher. A calculation of global vote for a page does 
+not ensure us that a document has been checked and evaluated \emph{sufficently}. If a page 
+is evaluated as nine but by five users only, we are not satisfied by the level of judgment. Furthermore our opinion could change depending on the five users' trust coefficient. We need a measure of the \emph{trustworthiness of the marks} from now called $\boldsymbol{\sigma}$. \\ \textbf{A document's version is marked as stable when it has been sufficiently evaluated by users, thus when the overall $\boldsymbol{\sigma}$ has passed an established threshold.} In our model, stability of a document's version is not related only to the votes that it has received , but it is related to the quality and quantity of the votes, i.e. to their distribution and to the trust coefficient of the users. A stable version has not necessarily an excellent average of votes, but if it's stable we can be sure that it's vote has been carefully evaluated by sufficient number of users and they agree to a certain extent. \textbf{ $\boldsymbol{\sigma}$ is an evalutation of the reliability of the average of marks of a document.} That's the function of \sg parameter.
+\\ \\The \sg of a user's vote, called $\sigma_i$, is calculated as ($i$ is refered to the i-th users):
+\begin{equation} \label{eq:single_sigma}
+\sigma_i = \alpha_i^B \cdot \left(1- \Delta V\right)^C \qquad \Delta V = |\bar{V}- V_i| 
+\end{equation}
+In a \emph{single version} the overall \sg value is calculated as:
+\begin{equation} \label{eq:partial_sigma}
+\sigma= \sum_{i=1}^n \sigma_i = \sum_{i=1}^n \alpha_i^B \cdot \left(1- \Delta V\right)^C
+\end{equation}
+where $B$ and $C$ are constant that have to be chosen.
+Thus, \sg depends on $\alpha$, the trust coefficient of the user, and on the deviation of 
+his vote from the weithed average of the votes as calculated in the eq. \ref{eq:v_medio}. 
+If votes are distributed in a large range, their mean is less reliable as a global 
+judgment, so \sg is smaller. Wherease if votes are all close to each other, their mean has 
+more significance and the \emph{trustworthiness of the marks} \sg increases. Obviously 
+votes from more reliable users are more important than votes from users with a low $\alpha
+$. Parameters $B$ and $C$ could be used to make higher \al and $(1-\Delta V)$ more 
+important than smaller values.
+
+All the power of this system lives in the determination of the value of the threshold of $
+\sigma$ that established it has been reach a new stable versione. Ideas about how to 
+determine dinamically this fundamental value will be explored later (See section \ref{sec:choose_sigma}, pag. \pageref{sec:choose_sigma}).
+
+Now, returning to the problem of the Chain of Changes, what happens if Bob edits the 
+document before $\sigma$ threshold is reached? As we have already said, new votes are 
+more important that old ones, but Alice's work judgements cannot be thrown away.
+
+\subsection{The Decay Process} \label{sec:decay}
+When new not stable versions stack on the latest milestone of a document, every ring of 
+the famous Chain of Changes is ranked by a variable number of users. For every version, we 
+have a method to calculate the average vote (eq. \ref{eq:v_medio}, pag. 
+\pageref{eq:v_medio}) and the cumulative trustworthiness of marks, \sg (eq. 
+\ref{eq:partial_sigma}, pag. \pageref{eq:partial_sigma}), but it's not sufficient to be 
+able to determinate when a new milestone must be created and it's final mark. Furthermore, 
+version are not all  the same: there could be little corrections or big addictions and 
+they are really different. 
+
+Let's make an example: Alice creates a new document of 1500 characters; Bob finds two 
+spelling errors and creates a new revision, made of 10 characters. Some time later, 
+Alice's work has been voted by two people only because Bob has worked quickly. Bob's 
+version instead has been voted by a lot of people. \\ In this case considering only Bob's 
+revision's marks (the latest) as valid it's not a problem: the votes are related mainly to 
+Alice's work because she has made the real big part of the writing.  Votes given to Alice 
+could almost be added directly.
+
+If we reverse the situation things change a lot. Imagine that Alice, with her 1500 
+characters, receives a load of votes. Then, after some time, Bob makes a small correction 
+and receives only a few votes. Can we consider only the lates marks as valid? In this case 
+it would be wrong because the real judgements has been made by marks of the first 
+version. After Bob's intervention, new votes are still related to previous version.
+
+After the first two revisions, Charlie arrives on the page, decides to complete a poor 
+paragraph of the document and saves a new version with 300 characters. He even receives a 
+lot of valutations. In this case the writing has changed considerably and consequentially 
+old votes are less significative: they lose importance compared to new votes relatively to 
+the number of modified (added or removed) characters.
+
+If votes lose importance with the addiction of new rings to the Chain of Changes, also 
+trustworthiness of marks \sg has to be scaled along the revisions to make the system 
+coherent. 
+
+Now we'll descrive how this sort of \textit{\textbf{Decay}} takes part in \wir system.
+
+\subsubsection{V Decay} \label{sec:v_decay}
+The Decay of Votes or \emph{V Decay} must give us a way to calculate the average mark of a 
+stack of versions of a document given the votes and the number of changes of every ring.
+We called this mechanism "decay" just because at every new step of the chain, all previous 
+calculations have to be scaled by a particular factor to take part in the next computing. 
+Proceeding this way, step by step, is the best practice to make the computations the less 
+complex possible with the accumulating of revisions.
+
+\paragraph{Initial data} Consider now a stack of revisions that begins with a new document \footnote{what to do after a given stable version will be explained later in section \ref{sec:after_stable}, pag. \pageref{sec:after_stable}}. 
+Every version has received a number $N_i$ of votes by $N_i$ users, everyone with his $
+\alpha_i$ coefficient. Every user can vote only one time every version. Taking individually every version, we calculate it's weighted 
+\emph{partial} average of marks according to eq. \ref{eq:v_medio}, pag. 
+\pageref{eq:v_medio}, and we call those partial means \pb{n} ($n$ is related to the n-th version).\\
+Every version is characterized by an amount of changes: considering numerically both 
+addiction and deletions as equal changes, we call that number $\lambda_n$ for every 
+version.
+
+\paragraph{Decay factor (DF)} Now, we start calculating a progressive \emph{total average} 
+\ph{i} of marks, starting from the first revision. We use this simple recursive formula, :
+\begin{equation} \label{eq:V_hat1}
+\tilde{V}_1 = \bar{V}_1  \quad\longrightarrow\quad \tilde{V}_n = \frac{\bar{V}_n + \Phi_n 
+\cdot \tilde{V}_{n-1}}{1+ \Phi_n} 
+\end{equation}
+For every step, the \emph{total} average depends on the \emph{partial} average of votes 
+for the current revision, but the previos \emph{total} average is not lost. Actually, the 
+new \emph{total} mark is a weighted mean between the current \emph{partial} mark and 
+the previous \emph{total} mark over the \textbf{Decay Factor (DF)} $\mathbf{\Phi}$, that 
+it's different for every $n$.
+
+As we explained with examples at the beginning of \ref{sec:decay} section, \DPii must 
+depend on the relative number of changes between subsequent revisions.
+\\ Doing so $\Phi_n$ can be expressed as:
+\begin{equation} \label{eq:phi}
+\Phi_n = \left(1- \frac{\lambda_n}{\lambda_{n_{tot}}}\right)^D
+\end{equation}
+where $\lambda_{n_{tot}}$ is given by the partial sum of all the changes from the 
+beginning to the n-th version \emph{included}:
+\begin{equation}
+\lambda_{n_{tot}} = \sum_{i=1}^n \lambda_i
+\end{equation}
+The exponent $D$ can be determined a posteriori. 
+Let's analyze the behavior of the \DPii.\\
+\begin{itemize}
+\item If the n-th revision of the document introduces small changes compared to all the 
+previous ones of other users, then $\Phi_n \sim1$. Thus, old votes will be mediated 
+with new votes with almost the same weight in formula \ref{eq:V_hat1}. That's coherent 
+with the fact that old votes are still important for the document because only little 
+changes has been made.
+\item If the n-th revision of the document introduces a number of changes of the order of 
+the partial sum of the previous ones, $\lambda_{\left(n-1\right)_{tot}}$, then $\Phi_n \sim \left(\frac{1}
+{2}\right)^A$. In fact:
+\begin{equation}
+\Phi_n =  \left(1- \frac{\lambda_n}{\lambda_{n_{tot}}}\right)^D \; = \; \left(1- \frac{\lambda_n}{\lambda_{\left(n-1\right)_{tot}} + \lambda_n}\right)^D
+\end{equation}
+and we are considering the case $\lambda_n \sim \lambda_{\left(n-1\right)_{tot}}$.
+In this case older votes are becoming less and less important than newer and that's 
+consistent with the fact that the number of new changes is of the same order of the 
+previous changes: there's a big alteration in the document and must be revaluated.
+\item Finally, if the n-th revision introduces a number of changes really bigger than the 
+partial sum of all the previous ones, $\Phi_n \rightarrow 0$. Because $\lambda_n$ is 
+included in $\lambda_{n_{tot}}$, to make $\Phi \rightarrow 0$ the n-th changes must be a 
+really bend in the document. In this case old votes are practically deleted from the 
+weighted average as eq. \ref{eq:V_hat1} showes.
+\end{itemize}
+
+A general observation is that older votes are never more important than newer ones. In the limit case of a new version with very little number of changes $\lambda$, old and new votes have the same importance. This is consistent with the fact the updated judgdements are always more reliable.
+
+Now we have a clear view of how votes are scaled over the Chain of Changes, we must look at how \sg parameter scales.
+
+\subsubsection{$\boldsymbol{\sigma}$ Decay} \label{sec:s_decay}
+
+As we said in section \ref{sec:sigma}, \sg parameter measures the trustworthiness of marks, so if marks loses importance along the chain, the total sigma \sg calculation should consider all the marks but has to evaluate more newer votes. 
+\paragraph{Initial data} We know how to calculate \sg for every \emph{single} version from equations \ref{eq:partial_sigma} and \ref{eq:single_sigma} on page \pageref{eq:partial_sigma}. Consider a stack of revisions that begins with a new document. For every version, excepted the current, we can calculate che \emph{partial} \sg and we call that $\sigma_n$. 
+\begin{equation} \label{eq:sigma_partial_n}
+\sigma_{n} = \sum_{i=1}^{N_i} \sigma_i = \sum_{i=1}^{N_i} \alpha_i^B \cdot \left(1- \Delta V\right)^C \qquad \Delta V = |\bar{V_n}- V_i| 
+\end{equation}
+where $N_i$ is the number of votes to the n-th version,  $\sigma_i$ and $\alpha_i$ are related to the single vote and user.
+First of all, note that for \textit{every version} the overall $\sigma_n$ is calculated using only votes given to that version and that the partial average of marks $\bar{V_n}$ is used, not the total average $\tilde{V_n}$. 
+
+The calculation for past versions can be done only one time because data used doesn't change any more. For the current active version things change a little: in fact every new vote changes the partial average of marks. So, for the latest version $\sigma_n$ must be calculated every time a vote is added.
+
+\paragraph{Decay Factor (DF)} Now, as in the case of V Decay, we have to calculate the \emph{total} \sg, called $\tilde{\sigma_n}$, starting from the first version.
+
+\begin{equation} \label{eq:s_hat}
+\tilde{\sigma}_1 = \sigma_1  \quad\longrightarrow\quad \tilde{\sigma}_n = \sigma_n + \Phi_n \cdot \tilde{\sigma}_{n-1}
+\end{equation}
+As Decay Factor (DF) $\Phi$, obviously we use the same DF of the V Decay:
+\begin{equation}
+\Phi_n = \left(1 - \frac{\lambda_n}{\sum_{i=1}^n \lambda_i}\right)^D
+\end{equation}
+The effect of the DF is the same of that described in section \ref{sec:v_decay}. The only difference is that $\tilde{\sigma_n}$ is a linear combination of contibutes of every version and not a weighted mean. 
+
+\subsubsection{After a stable version}\label{sec:after_stable}
+So far we have considered decays starting from the creation of the document, so that $\tilde{V}_1 = \bar{V}_1$ and $\tilde{\sigma}_1 = \sigma_1$. 
+If a document is modified after a version marked as stable, its vote must influence the later calculations on new revisions: the work on the document does not restart from the beginning.
+All the formulas and decays described previously are valid with a change:
+\begin{equation}
+\tilde{V}_1 = \bar{V}_1 + \Theta \cdot \tilde{V_{stable}} \qquad \tilde{\sigma}_1 = \sigma_1 + \Theta \cdot \tilde{\sigma_{stable}}
+\end{equation}
+The total average mark and \sg of the stable base version are inserted in the decay with a DF $\Theta$. This factor $\Theta$ could be modeled in various way: 
+\begin{itemize}
+\item $\Theta$ could depend on the number of characters of the stable version. The longer the latest stable version is, the more its votes are important.
+\item $\Theta$ could be a fixed parameter, chosen a posteriori
+\item $\Theta$ could depend on the number of users have voted the stable version. The more it has been voted, the less must lose importance.
+\end{itemize}
+
+\subsection{Reaching the threshold} \label{sec:reaching_thre}
+Let's now focus on the mechanism that makes a modified document reaching the threshold of $\boldsymbol{\sigma}$ ($\boldsymbol{\sigma_s}$), i.e. when the latest revision becomes a stable milestone. \\Every time the latest version receives a new vote:
+\begin{enumerate}
+\item the \emph{partial} average of marks $\bar{V}_n$ is updated
+\item the \emph{partial} $\sigma_n$ is updated (as descrided in section \ref{sec:s_decay}), because $\bar{V}_n$ has changed.
+\item the \emph{total} $\tilde{\sigma}_n$ is updated by formula \ref{eq:s_hat}
+\item new value of $\tilde{\sigma}_n$ is compared to  $\sigma_s$
+\item if $\tilde{\sigma}_n \geq \sigma_s$  the latest version must be labeled as stable because it has been sufficently evaluated:
+\begin{enumerate}
+\item the \emph{total} average of marks $\tilde{V_n}$ is calculated by formula \ref{eq:V_hat1} and assigned to the new stable milestone as ultimate mark.
+\item the final mark is published on the page and it's no more secret.
+\item all calculations to update users' coefficient are trigged as we will se in section \ref{sec:change_par} on pag. \pageref{sec:change_par}.
+\item polling can be stopped or no stopped. There are two scenery:
+\begin{enumerate}
+\item polling is stopped: reaching the threshold $\sigma_s$ the docuement has been sufficently evaluated. The final vote remains immutable until new revisions come.
+\item polling is not stopped: new votes for the stable version are computed.  $\bar{V_n}$ and  $\tilde{V}_n$ are updated, but $\sigma_n$ and $\tilde{\sigma}_n$ are not. For every new vote, $\sigma_i$ is calculated by formula \ref{eq:single_sigma} using $\tilde{V}_n$ as average of marks. Then every $\sigma_i$ is added directly to $\tilde{\sigma_n}$ without any DF (document is not changed). Doing so $\sigma$ could only grow\footnote{This point is not so clear: polling could continue, but could $\sigma$  change after it has reached the threshold?}.
+\end{enumerate} 
+\end{enumerate}
+\item if $\tilde{\sigma}_n \leq \sigma_s$ the threshold has not be reached yet.
+\item when a new vote is received and we return to point 1.
+\end{enumerate}
+If the document is modified before its latest version has reached $\sigma_s$, then a new ring of the Chain of Changes is created and the following operations take place for the previous version:
+\begin{enumerate}
+\item the definitive $\bar{V}_{n-1}$ is calculated.
+\item the definitive $\tilde{V}_{n-1}$ is calculated with the correct DF $\Phi_{n-1}$.
+\item the definitive $\sigma_{n-1}$ is calculated given the definitive $\bar{V}_{n-1}$.
+\item the definitive $\tilde{\sigma}_{n-1}$ is calculated given the correct DF $\Phi_{n-1}$.
+\end{enumerate}
+With all the parameters set for the previous version, we can now do the calculations described in the previous mechanism for the current version.
+
+\subsection{Finding $\boldsymbol{\sigma_s}$} \label{sec:choose_sigma}
+Choosing the right $\sigma_s$ threshold of every document is the key of all \wir system.
+This parameter is not fixed and it could be determined by some dynamical conditions: here some proposals.
+\begin{itemize}
+\item $\sigma_s$ could depend on the number of visitors on the page. The more users have viewed a page, the more it's necessary a depth evaluation.
+\item $\sigma_s$ could depend on the category of the subject of the document
+\item $\sigma_s$ could depend on the number on internal and external links to the page. 
+\item $\sigma_s$ must be linked also to the history of a document. When a page is created from scratch $\sigma_s$ should be high, because it should be more difficult to reach the first stable version than to modify later the document. Then $\sigma_s$ for following revisions could depend on the number of users involved in the writing of the document or on the lenght of it.
+\end{itemize}
+
+In general the more a page is important for the platform, the more $\sigma_s$ must be high to guarantee an evaluation in deep.
+
+
+\newpage
+\section{Update User's Parameters} \label{sec:change_par}
+When a stack of revisions become stable, users' work has been carefully evaluated: it's time to change users' trust coefficient to reflect their action within this document.
+As we described in section \ref{sec:user}, \al trust coefficient depends on two parameters: the quality of writing $a$ and the qualilty of reviewing $b$.
+Both these parameters are changed when a user has taken part of a chain of revision become stable: if the user is the author of one of the revision his $a$ parameter changes, if the user has voted one on more of the revisions his $b$ parameter changes.
+ 
+\subsection{$\mathbf{\Delta a}$ calculation} \label{sec:deltaa}
+\paragraph{Influencial parameters} 
+\begin{itemize}
+\item In our model, since the \al coeffient is related to the expected rank of the user if evaluated by other users, $\Delta a$ must be proportional to the difference between the user's current \al and the average mark assigned to his work, $\Delta V = ( \bar{V} - \alpha)$.
+\item Then $\Delta a$ should depend on the importance of the user's work in the overall document, thus on the ration $\lambda_n / \mu_{tot}$, where $\lambda_n$ is the number of changes by the user and the $\mu_{tot}$ is the total number of characters of the document.
+\item Also \sg of votes given to the user could influence the width of $\Delta a$. Note that we are considering the \emph{partial} \sg or $\sigma_n$ of the user's version, as calculated in formula \ref{eq:sigma_partial_n}. If a lot of trusted users vote the document, $\Delta a$ should be more important. To eliminate the influence of the number of voters to this parameter we should use the \emph{reduced} \sg, $\mathring{\sigma}_n$:
+\begin{equation}
+\mathring{\sigma} _n= \frac{\sigma_n}{N_v}
+\end{equation}
+where $N_v$ is the number of votes. 
+\end{itemize}
+
+When a user writes a revision for a document, every subsequent version is related in some measure with his work. Thus, to evaluate the writing qualities of a user we must consider not only the votes assigned to his version but also all the votes given to subsequent versions till the stable one. Obviously the importance of following versions' votes must be related to the number of changes \emph{from} the first user's version. 
+We need a kind of \emph{Forward Decay} for $\Delta a$ calculation.
+
+\paragraph{User's version} First of all let's consider the versions directly written by the current user in exam, Alice. For every Alice's version $n$, $\Delta \tilde{a}_n$ is calculated using the following formula:
+\begin{equation} 
+\Delta \tilde{a}_n = \Delta V_n  \cdot \mathring{\sigma_n} \cdot \frac{\lambda_n}{\mu_{tot}}
+\end{equation}
+using the notation convention of the previous section \ref{sec:decay} we can expand the formula as:
+\begin{equation}\label{eq:delta_a_par}
+\Delta \tilde{a}_n = \left(\bar{V_n} - \alpha\right) \cdot \frac{\sigma_n}{N_v} \cdot \frac{\lambda_n}{\mu_{tot}}
+\end{equation}
+
+\paragraph{Forward Decay} Now let's consider versions after Alice's work. Starting with the first version after Alice's version we can calculate every \emph{partial} $\Delta \bar{a}_j$ as:
+\begin{equation}
+\Delta \bar{a}_j = \Psi_j \cdot \Delta V_j \cdot \mathring{\sigma_j}
+\end{equation}
+\begin{equation} \label{eq:delta_a_DF}
+\Delta \bar{a}_j = \Psi_j \cdot \left(\bar{V_j}- \alpha_{Alice}\right) \cdot \frac{\sigma_j}{N_v}
+\end{equation}
+where $\bar{V_j}$ and $\sigma_j$ are related the j-th version, and $\alpha_{Alice}$ is always the \al coeffient of Alice.
+
+$\mathbf{\Psi_j}$ is the Decay Factor (DF) that weighs as usually the importance of following versions (instead of $\Phi_n$ that is used with the previous versions).
+This DF depend on the number of changes of the j-th version related to the total number of changes \emph{from} Alice's version $\lambda_n$.
+\begin{equation} \label{eq:psi}
+\Psi_j = \left(1- \frac{\lambda_j}{\lambda_{j_{tot}}}\right)^E
+\end{equation}
+\begin{equation}
+\lambda_{j_{tot}} = \sum_{i=n}^j \lambda_i
+\end{equation}
+where E is a parameter defined a posteriori.
+
+
+We can observe that if the versions after Alice's one introduces a lot of changes, their votes are not influential for Alice's $\Delta a$. Otherwise the newer votes are also related to Alice's work and consequentally are important for her rank.
+
+\paragraph{Total $\boldsymbol{\Delta a}$} We can now calculate the total $\Delta a$ for Alice:
+\begin{equation}
+\Delta a_{tot} = F \cdot \gamma \cdot \left(\sum_{n=1}^A \Delta \tilde{a}_n + \sum_{j=1}^B \Delta \bar{a}_j\right)
+\end{equation}
+where $F$ is a parameter chosen a posteriori, $A$ is the number of the versions written by Alice and B is the number of versions between Alice's one and the stable one.
+
+If Alice has written more than once in a single chain of changes:
+\begin{itemize}
+\item $\Delta \tilde{a}_n$  is calculated for every Alice's version with formula \ref{eq:delta_a_par}.
+\item after every Alice's version $\Delta \bar{a}_j$ is calculated with the Forward Decay process with formula \ref{eq:delta_a_DF} for every version till it is met the stable version or another Alice's version.
+\end{itemize}
+As you can see finally $\Delta a_{tot}$ depends on the user's activity coefficient $\gamma$. If the user is inactive ($0 < \gamma < 1$) then  $\Delta a_{tot}$ is decreased. If the user is active ($\gamma >1$), then it is increased. An active user could quickly increase his \al if he receives a lot of good votes. 
+
+\subsection{$\mathbf{\Delta b}$ calculation} \label{sec:deltab}
+The $b$ parameter measures the user's ability  to judge other users' works. This parameter is important because a lot of users on the platform are only viewers and not writers: their \al is fundamental because they are who votes the documents, hence it has to reflect the quality of their actions.
+
+\paragraph{Influencial parameters}
+\begin{itemize}
+\item First of all, an important parameter is the deviation of the user's vote from the mean of votes. If the vote is too distant from the mean it could imply that the user is not good at evaluate properly the document. We could define a parameter $\varphi$ calculated as:
+\begin{equation}
+\varphi = \left(\frac{\delta - \Delta V}{\delta}\right)^G \quad \longrightarrow \quad \Delta b \propto \delta
+\end{equation}
+where $G$ is a parameter determined a posteriori and $\delta$ is the \emph{standard deviation} of votes assigned to a \emph{single} version:
+\begin{equation}
+\delta = \sqrt{ \frac{1}{N} \sum_{i=1}^N \left(V_i - \bar{V}\right)^2} 
+\end{equation}
+where $N$ is the number of votes and $\bar{V}$ is the \emph{partial} average of votes of the current version. $\Delta V$ is the absoulute value of the difference between the vote $V_i$ in exam and $\bar{V}$:
+\begin{equation}
+\Delta V = | V_i - \bar{V}|
+\end{equation}
+There are different scenarios:
+\begin{itemize}
+\item if $\Delta V < \delta$, $\varphi$ is always less then 1 and positive. Thus $\Delta b\propto \varphi$ is positive and user's \al increases.
+\item if $\delta < \Delta V < 2\delta$, $\varphi$ is negative and less then 1. Thus $b$ decreases by a small amount and \al decreases.
+\item if $\Delta V > 2\delta$, $\varphi$ is negative and greater then 1. So $b$ decreases much and so does \al.
+\item finally is $\Delta V \simeq \delta$ then $\varphi \simeq 0$. $b$ and \al doesn't change because the vote is distributed normally.
+\end{itemize}
+
+\item Also user's \al is important to measure $\Delta b$. If a trusted user votes far from the average is little probable that he has judged in the wrong way: we trust that user! Variations of $b$ linked with the distribution of votes must be weighted by user's \al in this way:
+\begin{equation}
+\Delta b \propto \left(1- \alpha\right)^H
+\end{equation}
+The exponent $H$ could be setted a posteriori. If a user is already trusted his $\Delta b$ changes slowly. 
+\end{itemize}
+
+\paragraph{Total $\mathbf{\Delta b}$}
+Given a Chain of Changes between two stable versions and a specific user that has partecipated  in the poll, we calculate $\Delta b_n$ for each of his vote using the \emph{partial} average of marks $\bar{V_n}$ of every different version:
+\begin{equation}
+\Delta b_n =  \left(1- \alpha\right)^H \cdot \varphi
+\end{equation}
+\begin{equation}
+\Delta b_n = \left(1- \alpha\right)^H \cdot \left(\frac{\delta - \Delta V}{\delta}\right)^G
+\end{equation}
+Remeber that every user can vote only one time a revision but can vote more than one in Chain of Changes.
+Then $\Delta b_n$ are summed up to make \emph{total} $\Delta b$ of a single user:
+\begin{equation}
+\Delta b_{tot} = L \cdot \gamma \cdot \sum_{i=1}^N \Delta b_i
+\end{equation}
+where $N$ is the number of the user's vote and $L$ is a parameter to determine a posteriori as usual. Also the $\gamma$ activity coefficient of the user is present as in the $\Delta a_{tot}$ process. Active users' coefficients could change more quickly than inactive users' ones.
+
+\subsection{$\boldsymbol{\gamma}$ calculation} \label{sec:gamma}
+User's activity coefficient $\gamma$ is important because it influences the size of the variation of $a$ and $b$, so it directly influences changes of \al.
+The logic behind the calculations is that if a user is active we can change a lot his rating because it is frequently updated. If a user is inactive changes must occur more slowly because we don't know when coefficients will be updated again and it could be not in the short period.
+Activity coefficient could be calcaluted as:
+\begin{equation}
+\gamma =  P \cdot \frac{actions}{days} \cdot Q^{-\mbox{\textit{inactive days}}}
+\end{equation}
+$\gamma$ is proportional to the number of actions by day and to a constant $P$.
+Then, for every day \footnote{another fixed period of time could be chosen} of inactivity, $\gamma$ is scaled by an exponential factor with base $Q > 1$.
+
+\newpage
+\section{Pros and Cons, Further development}
+\subsection{Pros}
+\begin{description}
+\item[Automatic] The \sg \emph{Threshold} mechanism tries to automate the determination of the stability of the documents. We decide to link stability with the quality of the overall judgement in the sense described in section \ref{sec:sigma}, pag. \pageref{sec:sigma}.
+\item[Expandable] For how it is build, \wir system is only a valid \emph{base} for a more complex and complete rating system. A lot of parameters can be further modeled and a lot of mechanism have to be developed more.
+\item[Flexible] The system has 13 parameters that influence the calculation to be determined a posteriori with tests and simulations. This increases a lot the flexibility of the system.
+\item [Scalable] Calculations involved in the system have been thought keeping in mind computational complexity. We try to minimize the number of necessary operations.
+\item [Fair] The system tries to evaluate fairly the quality of every user and of every document. The more a user is active, the more he can improve his reputation. Users' engagement is prized and measured. Document's reliability is evaluated thoughtful and we try to discourage bad polling.
+\end{description}
+
+\subsection{Cons}
+\begin{description}
+\item[Number of users] To work correctly, \wir system needs a lot of users and a lot of votes to every document. Only with a lot of data, marks and their trustworthiness, measured by $\sigma$, make sense.
+\item[Review ability] Users' ability to review other works measurament (See section \ref{sec:deltab}, pag. \pageref{sec:deltab}) could be improve a lot. We need to test the current mechanism because it could evaluate normal votes as bad ones if not set correctly. The system is more good at rating users how writes documents than users that vote them. This could be a problem because the majority of users are reviewers. The problem could be solved measuring more precisely the $b$ coefficient. 
+\end{description}
+
+
+
+
+\end{document}
