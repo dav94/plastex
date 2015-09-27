@@ -56,6 +56,16 @@ class PageTree (object):
 		self.current_url= self.previous_url
 
 
+
+	def collapsePages(level):
+		#let's creates a tree of the ids
+		id_index = []
+		current_dict = {}
+		while(len(current_dict)>=1):
+			
+
+
+
 	def getXML():
 		pass
 

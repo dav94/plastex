@@ -38,6 +38,7 @@ class MediaWikiRenderer (Renderer):
         self.blocks = []
         #tree object
         self.tree = PageTree()
+        self.list_level='' 
 
     def default(self, node):
         s = []
@@ -88,15 +89,16 @@ class MediaWikiRenderer (Renderer):
     def do_paragraph(self,node):
         self.sectioning(node,'paragraph')
         return u''
-
-    def do_subparagraph(self,node):
-        self.sectioning(node,'do_subparagraph')
-        return u''
-
-
-
     ############################
-
+    
+    #subparagraph are not node of the section tree
+    def do_subparagraph(self,node):
+        s =[]
+        s.append('\n\'\'\'')
+        s.append(unicode(node.attributes['title']))
+        s.append('\'\'\'\'')
+        s.append(unicode(node))
+        return u''.join(s)
 
     def do_equation(self, node):
     	s = []
@@ -148,10 +150,63 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         return u''.join(s)
 
+    def do_itemize(self,node):
+        s = []
+        self.list_level+='*'
+        for item in node.childNodes:
+            t=unicode(item)
+            s.append(self.list_level+t)
+        self.list_level = self.list_level[:-1]
+        return u'\n'.join(s)
+
+    def do_enumerate(self,node):
+        s = []
+        self.list_level+='#'
+        for item in node.childNodes:
+            t=unicode(item)
+            s.append(self.list_level+t)
+        self.list_level = self.list_level[:-1]
+        return u'\n'.join(s)
     
+    def do_description(self,node):
+        s = []
+        for item in node.childNodes:
+            t=unicode(item)
+            s.append(u';'+ str(item.attributes['term'])+":" +t)
+        return u'\n'.join(s)
 
+    def do__tilde(self,node):
+        return unicode(node)    
 
+    def do__dollar(self,node):
+        s=[]
+        return u'$'
 
+    def do__percent(self,node):
+        s=[]
+        return u'%'
+
+    def do__opencurly(self,node):
+        s=[]
+        return u'{'
+
+    def do__closecurly(self,node):
+        s=[]
+        return u'}'
+    
+    def do__hashmark(self,node):
+        s=[]
+        return u'#'
+
+    def do__underscore(self,node):
+        s=[]
+        return u'_'
+
+    def do__ampersand(self,node):
+        s=[]
+        return u'&'
+    
+    
 
 class XMLRenderer(Renderer):
 
@@ -166,7 +221,8 @@ class XMLRenderer(Renderer):
         self.footnotes = []
         self.blocks = []
         self['\\']=self.backslash
-        self.itemize_level=''   
+        
+          
 
     def default(nself,node):
         s = []
@@ -201,11 +257,6 @@ class XMLRenderer(Renderer):
         s = u'   %s' % re.compile(r'^\s*\S+\s*(.*?)\s*\S+\s*$', re.S).sub(r'\1', node.source)
         return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', s)+'</math>'
 
-    def do_itemize(self,node):
-        s = []
-        self.itemize_level+='*'
-        for item in node.childNodes:
-            t=unicode(item)
-            s.append(self.itemize_level+t)
-        self.itemize_level = self.itemize_level[:-1]
-        return u'\n'.join(s)
+ 
+
+   
