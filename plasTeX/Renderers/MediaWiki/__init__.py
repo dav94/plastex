@@ -224,6 +224,9 @@ class MediaWikiRenderer (Renderer):
         s.append(u'</blockquote>')
         return u''.join(s)
 
+    do_quote=do_quotation
+    do_verse=do_quotation
+
     def do_centering(self, node):
         s = []
         s.append(u'<div style="text-align:center;">')
@@ -308,18 +311,16 @@ class MediaWikiRenderer (Renderer):
         else:
             label_tag = ""
 
+        #adding label to tree
+        self.label(label_tag)
         return '<math>'+ label_tag + s +'</math>'
 
     do_displaymath = do_equation
-    do_enumerate = do_equation
     do_eqnarray = do_equation
     do_matrix = do_equation
     do_array = do_equation
 
-    do_quote=do_quotation
-    do_verse=do_quotation
-
-    def do_math(self, node): #TBD
+    def do_math(self, node):
         tag = None
 
         #search content between $ $
