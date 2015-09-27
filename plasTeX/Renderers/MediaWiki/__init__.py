@@ -52,6 +52,20 @@ class MediaWikiRenderer (Renderer):
 
 
     #sectioning
+    def do_part (self,node):
+        title = node.attributes['title']
+        #adding index to parent
+        self.tree.addIndexParentPage(title)
+        #creation of the new page
+        self.tree.createPage(title,'part')
+        #content processing
+        text = unicode(node)
+        #adding text to current page
+        self.tree.addTextCurrentPage(text)
+        #exiting the section
+        self.tree.exitPage()
+        return u''
+
     def do_section(self,node):
         title = node.attributes['title']
         #adding index to parent
@@ -65,7 +79,6 @@ class MediaWikiRenderer (Renderer):
         #exiting the section
         self.tree.exitPage()
         return u''
-
 
 
     def do_equation(self, node):
@@ -160,6 +173,7 @@ class XMLRenderer(Renderer):
     def do_math(self, node): #TBD
         s = []
         s.append('<%s>' % node.nodeName)
+        return u''
         
         #return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', node.source)+'</math>'
 
