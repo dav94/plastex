@@ -31,7 +31,13 @@
 <title>Introduction</title>
 </attributes>
 <par>
-The main purpose of this project is the creation of an automated system to evalute the reliability and quality of articles and pages on a wiki-style learning platform. 
+<displaymath>
+x = 2
+</displaymath>
+
+</par>
+<par>
+ <math>$x=3$</math> The main purpose of this project is the creation of an automated system to evalute the reliability and quality of articles and pages on a wiki-style learning platform. 
 </par>
 <paragraph>
 <attributes>
