@@ -79,4 +79,6 @@ class PageTree (object):
 	def collapseText(self,level_min):
 		self.pages[self.doc_title].collapseText(level_min,self.pages,self.media_urls,'',{})
 
+	def fixReferences(self, )
+
 	
