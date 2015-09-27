@@ -277,7 +277,8 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         s.append(u'</u>')
         return u''.join(s)
-        
+    
+    do_underbar=do_underline
         
     ##########################################
     #Image tags
