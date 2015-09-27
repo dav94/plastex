@@ -106,6 +106,27 @@ class MediaWikiRenderer (Renderer):
         return u'%s' % content
 
 
+    ###############################################
+    #references
+    ''' Method that insert label into PageTree'''
+    def label(self,lab):
+        #the reference to the current page is saved
+        self.tree.addLabel(lab)
+
+    ''' Labels are managed bey PageTree'''
+    def do_label(self,node):
+        #retriving label id
+        l = node.attributes['label']
+        self.label(l)
+
+    def do_ref(self,node):
+        r = node.attributes['label']
+        return unicode(' (\ref{'+r+'}) ')
+
+    do_pageref = do_ref
+    do_vref = do_ref
+
+
     ################################################
     #Formatting
     def do_par(self, node):
@@ -216,6 +237,14 @@ class MediaWikiRenderer (Renderer):
     def do_flushleft(self, node):
         return unicode(node)
 
+    def do_footnote(self,node):
+        s=[]
+        s.append(u" (")
+        s.append(unicode(node))
+        s.append(u") ")
+        return u''.join(s)    
+
+
     ##########################################
     #Image tags
 
@@ -234,7 +263,6 @@ class MediaWikiRenderer (Renderer):
     #     s.append(unicode(node))
     #     s.append('end_caption')
     #     return u''.join(s)
-
 
     ###################################################
     #Math tags
@@ -463,4 +491,4 @@ class XMLRenderer(Renderer):
     do_matrix = do_equation
     do_array = do_equation
         
- 
+     
