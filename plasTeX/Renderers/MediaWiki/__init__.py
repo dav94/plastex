@@ -179,32 +179,34 @@ class MediaWikiRenderer (Renderer):
         return unicode(node)    
 
     def do__dollar(self,node):
-        s=[]
         return u'$'
 
     def do__percent(self,node):
-        s=[]
         return u'%'
 
     def do__opencurly(self,node):
-        s=[]
         return u'{'
 
     def do__closecurly(self,node):
-        s=[]
         return u'}'
     
     def do__hashmark(self,node):
-        s=[]
         return u'#'
 
     def do__underscore(self,node):
-        s=[]
         return u'_'
 
     def do__ampersand(self,node):
-        s=[]
         return u'&'
+
+    def do_quotation(self, node):
+        s = []
+        s.append(u'')
+        s.append(unicode(node))
+        return u'<blockquote>'.join(s)+'</blockquote>';
+
+    do_quote=do_quotation
+    do_verse=do_quotation
     
     
 
@@ -256,7 +258,3 @@ class XMLRenderer(Renderer):
     def do_equation(self, node): #TBD
         s = u'   %s' % re.compile(r'^\s*\S+\s*(.*?)\s*\S+\s*$', re.S).sub(r'\1', node.source)
         return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', s)+'</math>'
-
-    
-
-   
