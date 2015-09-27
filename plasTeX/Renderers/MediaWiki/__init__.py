@@ -40,13 +40,15 @@ class MediaWikiRenderer (Renderer):
         self.blocks = []
         #tree object
         self.tree = PageTree(doc_title)
+        #parameter for list formatting
         self.list_level='' 
+        #set for default tags
+        self.def_tags = set()
 
     def default(self, node):
         s = []
-        s.append('<%s>' % node.nodeName)
+        self.def_tags.add(node.nodeName)
         s.append(unicode(node))
-        s.append('</%s>' % node.nodeName)
         return u''.join(s)
 
 
@@ -105,6 +107,7 @@ class MediaWikiRenderer (Renderer):
 
     def do_document(self,node):
         content = unicode(node)
+        self.tree.addTextCurrentPage(content)
         return u'%s' % content
 
 
@@ -133,7 +136,7 @@ class MediaWikiRenderer (Renderer):
     #Formatting
     def do_par(self, node):
         s = []
-        s.append(u'\n\n')
+        s.append(u'\n')
         s.append(unicode(node))
         return u''.join(s)
         
@@ -153,6 +156,8 @@ class MediaWikiRenderer (Renderer):
 
     do_emph = do_textit
     do_itshape = do_textit
+    do_textsl = do_textit
+    do_slshape = do_textit
    
     def do_newline(self,node):
         s = []
@@ -265,10 +270,25 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         s.append(u'</small>')
         return u''.join(s)
+
     do_tiny=do_small
     do_scriptsize=do_small
-       
-        
+    
+    def do_underline(self, node):
+        s = []
+        s.append(u'<u>')
+        s.append(unicode(node))
+        s.append(u'</u>')
+        return u''.join(s)
+    
+    do_underbar=do_underline
+
+    def do_texttt(self,node):
+        s=[]
+        s.append(u"<tt>")
+        s.append(unicode(node))
+        s.append(u"</tt>")
+        return u''.join(s)  
         
     ##########################################
     #Image tags
@@ -521,5 +541,7 @@ class XMLRenderer(Renderer):
     do_matrix = do_equation
     do_array = do_equation
 
+      
 
-     
+
+   

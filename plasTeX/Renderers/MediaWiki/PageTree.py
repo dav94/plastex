@@ -1,4 +1,6 @@
 from Page import Page
+import datetime
+import time
 
 ''' Class that memorize the pages' structure and content during parsing '''
 class PageTree (object):
@@ -21,10 +23,12 @@ class PageTree (object):
 		self.pages[doc_title]= r
 
 		#indexes
-		self.previous=''
-		self.previous_url=''
+		self.page_stack = []
+		self.pageurl_stack = []
 		self.current = doc_title
-		self.current_url= doc_title
+		self.current_url = doc_title
+		#collapse level
+		self.collapse_level = 0
 
 
 	''' This method creates a new page and enters 
@@ -47,13 +51,15 @@ class PageTree (object):
 		#add pages to pages index
 		self.pages[newurl] = p
 		#updates current
-		self.previous= self.current
-		self.previous_url= self.current_url
+		self.page_stack.append(self.current)
+		self.pageurl_stack.append(self.current_url)
 		self.current= title
 		self.current_url= newurl
 
 	'''This method insert text in the current page   '''
 	def addTextCurrentPage(self,text):
+		print('ADDING TEXT TO URL='+self.current_url+' | ADDING TEXT='+text +\
+			' |current_url='+self.current_url+ '|current='+self.current )
 		self.pages[self.current_url].addText(text)
 
 	'''This method insert a page in the current page's index. It's used when 
@@ -63,22 +69,67 @@ class PageTree (object):
 
 	'''Return to the parent page enviroment'''
 	def exitPage(self):
-		self.current = self.previous
-		self.current_url= self.previous_url
+		self.current = self.page_stack.pop()
+		self.current_url= self.pageurl_stack.pop()
 
 	def addLabel(self,label):
 		self.labels[label]= self.current_url
 
 	def getRef(self,label):
-		return self.media_urlss
+		return self.media_urls[self.labels[label]]
 
 
 	''' This method collapse the text contained in subpages 
 	in the pages with level > level_min.
 	Tin pages with level<level_min is inserted an index of subpages. '''
 	def collapseText(self,level_min):
+		self.collapse_level = level_min
 		self.pages[self.doc_title].collapseText(level_min,self.pages,self.media_urls,'',{})
+		for l in self.labels:
+			self.labels[l] = self.media_urls[self.labels[l]]
 
-	def fixReferences(self, )
+	'''Method that starts the rendering of refs'''
+	def fixReferences(self):
+		self.pages[self.doc_title].fixReferences(self.labels,self.pages)
+
+	'''Entry point for XML exporting'''
+	def exportXML(self):
+		s = []
+		s.append('<mediawiki xml:lang="en">')
+		#starting iteration
+		self._exportXML(s,0,self.index,'')
+		s.append('</mediawiki>')
+		return '\n'.join(s)
+
+	'''Recursion function to explore the tree during exporting'''
+	def _exportXML(self, text, lev,cur_dict, cur_url):
+		if lev<= self.collapse_level:
+			for key in cur_dict:
+				page = None
+				if cur_url=='':
+					page = self.pages[self.doc_title]
+				else:
+					page = self.pages[cur_url+ '/'+key]
+
+				text.append(self.getPageXML(page))
+				if cur_url =='':
+					self._exportXML(text,lev+1,cur_dict[key],key)
+				else:
+					self._exportXML(text,lev+1,cur_dict[key],cur_url+"/"+key)
+
+	'''Return the mediawiki XML of a single page'''
+	def getPageXML(self,page):
+		s =[]
+		s.append('<page>\n<title>'+page.url+'</title>')
+		s.append('\n<restrictions></restrictions>')
+		s.append('\n<revision>')
+		ts = time.time()
+		s.append('\n<timestamp>'+ datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
+		s.append('</timestamp>')
+		s.append('\n<contributor><username>BoTeX</username></contributor>')
+		s.append('\n<text>'+ page.text+'\n</text>')
+		s.append('\n</revision>\n</page>')
+		return '\n'.join(s)
+
 
 	
