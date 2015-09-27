@@ -99,15 +99,6 @@ class MediaWikiRenderer (Renderer):
         s.append('\'\'\'\'')
         s.append(unicode(node))
         return u''.join(s)
-
-    def do_equation(self, node):
-    	s = []
-        s.append('<dmath>')
-        #child nodes
-        s.append(unicode(node))
-        #endtah
-        s.append('</dmath>')
-        return u''.join(s)
     
 
     def do_document(self,node):
@@ -137,28 +128,17 @@ class MediaWikiRenderer (Renderer):
     do_emph = do_textit
     do_itshape=do_textit
    
-
     def do__backslash(self,node):
         s = []
         s.append(u'\n')
         s.append(unicode(node))
         return u''.join(s)
 
-
     def do_newpage(self,node):
         s = []
         s.append(u'')
         s.append(unicode(node))
         return u''.join(s)
-
-
-    def do_math(self, node): #TBD
-        #s = []
-        #s.append('<%s>' % node.nodeName)
-        #for key, value in node.attributes.items():
-        return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', node.source)+'</math>'
-
-    do_ensuremath = do_math
 
     def do_itemize(self,node):
         s = []
@@ -215,8 +195,9 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         return u'<blockquote>'.join(s)+'</blockquote>';
 
-    do_ensuremath = do_math
 
+    ##########################################
+    #Math tags
     def do_equation(self, node): #TBD
         begin_tag = None
         end_Tag = None
@@ -264,6 +245,8 @@ class MediaWikiRenderer (Renderer):
     do_quote=do_quotation
     do_verse=do_quotation
 
+    do_ensuremath = do_math
+
     def do_math(self, node): #TBD
         tag = None
 
@@ -278,7 +261,7 @@ class MediaWikiRenderer (Renderer):
 
         s = tag
         return '<math>'+ s +'</math>'
-    
+    ###############################################
     
 
 class XMLRenderer(Renderer):
