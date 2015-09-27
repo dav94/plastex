@@ -99,6 +99,12 @@ class MediaWikiRenderer (Renderer):
     	s.append(unicode(node))
     	return u''.join(s)
 
+    def do__backslash(self,node):
+        s = []
+        s.append(u'\n')
+        s.append(unicode(node))
+        return u''.join(s)
+
 
 
 
