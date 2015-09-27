@@ -81,7 +81,7 @@ class PageTree (object):
 		self.labels[label]= self.media_urls[self.labels[label]]
 
 	'''Method that starts the rendering of refs'''
-	def fixReferences(self)
+	def fixReferences(self):
 		self.pages[self.doc_title].fixReferences(self.labels)
 
 

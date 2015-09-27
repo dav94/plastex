@@ -40,13 +40,15 @@ class MediaWikiRenderer (Renderer):
         self.blocks = []
         #tree object
         self.tree = PageTree(doc_title)
+        #parameter for list formatting
         self.list_level='' 
+        #set for default tags
+        self.def_tags = set()
 
     def default(self, node):
         s = []
-        s.append('<%s>' % node.nodeName)
+        self.def_tags.add(node.nodeName)
         s.append(unicode(node))
-        s.append('</%s>' % node.nodeName)
         return u''.join(s)
 
 
@@ -134,7 +136,6 @@ class MediaWikiRenderer (Renderer):
     def do_par(self, node):
         s = []
         s.append(u'\n\n')
-        s.append(unicode(node))
         return u''.join(s)
         
     def do_textbf(self,node):
