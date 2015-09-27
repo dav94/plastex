@@ -23,10 +23,10 @@ class PageTree (object):
 		self.pages[doc_title]= r
 
 		#indexes
-		self.previous=''
-		self.previous_url=''
+		self.page_stack = []
+		self.pageurl_stack = []
 		self.current = doc_title
-		self.current_url= doc_title
+		self.current_url = doc_title
 		#collapse level
 		self.collapse_level = 0
 
@@ -43,7 +43,7 @@ class PageTree (object):
 		p = Page(title,newurl,page_type,level)
 		#update index
 		cindex = self.index
-		for i in range(1,len(path)):
+		for i in range(0,len(path)):
 			cindex = cindex[path[i]]
 		#now cindex has the current dict
 		#and new key is inserted
@@ -51,13 +51,15 @@ class PageTree (object):
 		#add pages to pages index
 		self.pages[newurl] = p
 		#updates current
-		self.previous= self.current
-		self.previous_url= self.current_url
+		self.page_stack.append(self.current)
+		self.pageurl_stack.append(self.current_url)
 		self.current= title
 		self.current_url= newurl
 
 	'''This method insert text in the current page   '''
 	def addTextCurrentPage(self,text):
+		print('ADDING TEXT TO URL='+self.current_url+' | ADDING TEXT='+text +\
+			' |current_url='+self.current_url+ '|current='+self.current )
 		self.pages[self.current_url].addText(text)
 
 	'''This method insert a page in the current page's index. It's used when 
@@ -67,8 +69,8 @@ class PageTree (object):
 
 	'''Return to the parent page enviroment'''
 	def exitPage(self):
-		self.current = self.previous
-		self.current_url= self.previous_url
+		self.current = self.page_stack.pop()
+		self.current_url= self.pageurl_stack.pop()
 
 	def addLabel(self,label):
 		self.labels[label]= self.current_url
@@ -103,33 +105,30 @@ class PageTree (object):
 	def _exportXML(self, text, lev,cur_dict, cur_url):
 		if lev<= self.collapse_level:
 			for key in cur_dict:
-				print('key='+key)
 				page = None
 				if cur_url=='':
 					page = self.pages[self.doc_title]
 				else:
 					page = self.pages[cur_url+ '/'+key]
 
-				print('page_url='+page.url)
-				print('page_title='+page.title)
 				text.append(self.getPageXML(page))
 				if cur_url =='':
 					self._exportXML(text,lev+1,cur_dict[key],key)
 				else:
-					self._exportXML(text,lev+1,cur_dict[key],curr_url+"/"+key)
+					self._exportXML(text,lev+1,cur_dict[key],cur_url+"/"+key)
 
 	'''Return the mediawiki XML of a single page'''
 	def getPageXML(self,page):
 		s =[]
-		s.append('<page>\n<title>'+page.title+'</title>')
+		s.append('<page>\n<title>'+page.url+'</title>')
 		s.append('\n<restrictions></restrictions>')
 		s.append('\n<revision>')
 		ts = time.time()
-		s.append('<timestamp>'+ datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
+		s.append('\n<timestamp>'+ datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
 		s.append('</timestamp>')
-		s.append('<contributor><username>BoTeX</username></contributor>')
-		s.append('<text>'+ page.text+'</text>')
-		s.append('</revision></page>')
+		s.append('\n<contributor><username>BoTeX</username></contributor>')
+		s.append('\n<text>'+ page.text+'\n</text>')
+		s.append('\n</revision>\n</page>')
 		return '\n'.join(s)
 
 

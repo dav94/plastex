@@ -76,3 +76,9 @@ class Page(object):
 			pages[sub].fixReferences(labels,pages)
 			
 
+	def __str__(self):
+		s =[]
+		s.append('title='+self.title)
+		s.append('url='+self.url)
+		s.append('index='+str(self.index))
+		return '  '.join(s)

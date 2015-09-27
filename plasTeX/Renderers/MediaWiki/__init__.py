@@ -107,6 +107,7 @@ class MediaWikiRenderer (Renderer):
 
     def do_document(self,node):
         content = unicode(node)
+        self.tree.addTextCurrentPage(content)
         return u'%s' % content
 
 
@@ -135,7 +136,8 @@ class MediaWikiRenderer (Renderer):
     #Formatting
     def do_par(self, node):
         s = []
-        s.append(u'\n\n')
+        s.append(u'\n')
+        s.append(unicode(node))
         return u''.join(s)
         
     def do_textbf(self,node):
