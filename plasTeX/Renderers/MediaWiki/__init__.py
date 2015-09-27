@@ -152,13 +152,15 @@ class MediaWikiRenderer (Renderer):
         return u''.join(s)    
 
     do_emph = do_textit
-    do_itshape=do_textit
+    do_itshape = do_textit
    
-    def do__backslash(self,node):
+    def do_newline(self,node):
         s = []
         s.append(u'\n')
         s.append(unicode(node))
         return u''.join(s)
+    
+    do__backslash=do_newline
 
     def do_newpage(self,node):
         s = []
@@ -256,6 +258,17 @@ class MediaWikiRenderer (Renderer):
 
     def do_textrm(self, node):
         return unicode(node)
+
+    def do_small(self, node):
+        s = []
+        s.append(u'<small>')
+        s.append(unicode(node))
+        s.append(u'</small>')
+        return u''.join(s)
+    do_tiny=do_small
+    do_scriptsize=do_small
+       
+        
         
     ##########################################
     #Image tags
@@ -496,7 +509,5 @@ class XMLRenderer(Renderer):
     do_matrix = do_equation
     do_array = do_equation
 
-  
-       
-        
+
      

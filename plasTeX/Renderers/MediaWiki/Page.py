@@ -1,3 +1,5 @@
+import re
+
 ''' Class that manages the pages' content '''
 class Page(object):
 
@@ -62,3 +64,11 @@ class Page(object):
 			self.text = title+ "\n"+ self.text
 			#return the text
 			return self.text
+
+
+def fixReferences(self, labels):
+	for ref in re.finditer('\\ref{(.*?)}', self.text):
+		tag = ref.group(0)
+		label = reg.group(1)
+		self.text.replace(tag,' ([[' + labels[label] + ']]) ')
+	
