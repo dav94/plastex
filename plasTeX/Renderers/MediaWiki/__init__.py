@@ -221,7 +221,10 @@ class MediaWikiRenderer (Renderer):
         s.append(u" (")
         s.append(unicode(node))
         s.append(u") ")
-        return u''.join(s)     
+        return u''.join(s)
+
+    def do_hrulefill(self,node):
+        return u'-----'     
 
 
     ###################################################
