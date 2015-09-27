@@ -153,6 +153,8 @@ class MediaWikiRenderer (Renderer):
 
     do_emph = do_textit
     do_itshape = do_textit
+    do_textsl = do_textit
+    do_slshape = do_textit
    
     def do_newline(self,node):
         s = []
