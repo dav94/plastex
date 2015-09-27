@@ -195,6 +195,24 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         return u'<blockquote>'.join(s)+'</blockquote>';
 
+    ##########################################
+    #Image tags
+
+    def do_figure(self,node):
+        s = []
+        self.list_level+='*'
+        for item in node.childNodes:
+            t=unicode(item)
+            s.append(self.list_level+t)
+        self.list_level = self.list_level[:-1]
+        return u'\n'.join(s)
+
+    # def do_caption(self,node):
+    #     s = []
+    #     s.append('|')
+    #     s.append(unicode(node))
+    #     s.append('end_caption')
+    #     return u''.join(s)
 
     ##########################################
     #Math tags
@@ -245,8 +263,6 @@ class MediaWikiRenderer (Renderer):
     do_quote=do_quotation
     do_verse=do_quotation
 
-    do_ensuremath = do_math
-
     def do_math(self, node): #TBD
         tag = None
 
@@ -261,6 +277,8 @@ class MediaWikiRenderer (Renderer):
 
         s = tag
         return '<math>'+ s +'</math>'
+
+    do_ensuremath = do_math
     ###############################################
     
 
@@ -278,7 +296,22 @@ class XMLRenderer(Renderer):
         self.blocks = []
         self['\\']=self.backslash
         
-          
+    def do_caption(self,node):
+        s = []
+        s.append("|")
+        s.append(unicode(node))
+        return u''.join(s)
+
+    def do_includegraphics(self,node):
+        s = []
+        s.append('[[')
+        if node.hasAttributes():
+            for key, value in node.attributes.items():
+                if key == 'self':
+                     continue
+                if key == 'file':
+                    s.append('%s]]' % unicode(value))
+        return u''.join(s) 
 
     def default(nself,node):
         s = []

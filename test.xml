@@ -43,6 +43,24 @@
 <math>  y = |y>  </math>
 </par>
 <par>
+<figure>
+<attributes>
+<loc>h!</loc>
+</attributes>
+<par>
+|A picture of a gull.
+</par>
+<par>
+<centering>
+[[gull]] 
+</centering>
+
+</par>
+
+</figure>
+
+</par>
+<par>
  The main purpose of this project is the creation of an automated system to evalute the reliability and quality of articles and pages on a wiki-style learning platform. 
 </par>
 <paragraph>
@@ -123,13 +141,7 @@ is identified by a unique ID and by two parameters that measures his performance
 <par>
 <centering>
 <par>
-<caption>
-<attributes>
-<toc>None</toc>
-</attributes>
-Trust distribution
-</caption>
-
+|Trust distribution
 </par>
 <par>
  <label>
