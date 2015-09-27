@@ -291,15 +291,25 @@ class MediaWikiRenderer (Renderer):
         end_Tag = None
         label_tag = None
         structure_label_tag = None
+        s = node.source
+
+        #$$ search
+        global_dollars_search = re.search(ur'\$\$(.*?)\$\$', node.source)
 
         #search \begin and end \tag
-        global_begin_tag = re.search(ur'\\\bbegin\b\{(.*?)\}|\\\(|\\\[', node.source)
-        global_end_tag = re.search(ur'\\\bend\b\{(.*?)\}|\\\)|\\\]', node.source)
+        global_begin_tag = re.search(ur'\\\bbegin\b\{(.*?)\}|\\\[', node.source)
+        global_end_tag = re.search(ur'\\\bend\b\{(.*?)\}|\\\]', node.source)
 
+        #get content between $$ $$
         #get \begin{tag} and \end{tag}
         if global_begin_tag and global_end_tag:
             begin_tag = global_begin_tag.group(0)
             end_tag = global_end_tag.group(0)
+            s = s.replace(begin_tag, "")
+            s = s.replace(end_tag, "")
+        elif global_dollars_search
+            dollars_tag = global_dollars_search.group(1)
+            s = s.replace(dollars_tag, "")
 
         #search equation tag
         global_label_tag = re.search(ur'\\\blabel\b\{(.*?)\}', node.source)
@@ -311,9 +321,6 @@ class MediaWikiRenderer (Renderer):
             label_tag = ''
             structure_label_tag = ''
 
-        s = node.source
-        s = s.replace(begin_tag, "")
-        s = s.replace(end_tag, "")
         s = s.replace(structure_label_tag, "")
 
         # check if label tag exist. If it does, creates the tag
@@ -324,27 +331,32 @@ class MediaWikiRenderer (Renderer):
 
         #adding label to tree
         self.label(label_tag)
-        return '<math>'+ label_tag + s +'</math>'
+        return '<dmath>'+ label_tag + s +'</dmath>'
 
     do_displaymath = do_equation
     do_eqnarray = do_equation
     do_matrix = do_equation
     do_array = do_equation
+    do_align = do_equation
 
     def do_math(self, node):
         tag = None
 
         #search content between $ $
         global_tag = re.search(ur'\$(.*?)\$', node.source)
+        
+        regexp_brackets_global_tag = re.compile(ur'\\\((.*?)\\\)', re.DOTALL)
+        brackets_global_tag = re.search(regexp_brackets_global_tag, node.source)
 
         #get content between $ $
         if global_tag:
             tag = global_tag.group(1)
+        elif brackets_global_tag:
+            tag = brackets_global_tag.group(1)
         else:
             tag = ''
 
-        s = tag
-        return '<math>'+ s +'</math>'
+        return '<math>'+ tag +'</math>'
 
     do_ensuremath = do_math
     ###############################################
