@@ -51,7 +51,7 @@ class MediaWikiRenderer (Renderer):
     def do_textDefault(self, node):
         return node 
 
-
+    ###############################
     #sectioning
     def sectioning(self, node,page_type):
         title = unicode(node.attributes['title'])
@@ -65,7 +65,6 @@ class MediaWikiRenderer (Renderer):
         self.tree.addTextCurrentPage(text)
         #exiting the section
         self.tree.exitPage()
-
 
     def do_part (self,node):
         self.sectioning(node,'part')
@@ -82,6 +81,23 @@ class MediaWikiRenderer (Renderer):
     def do_subsection(self,node):
         self.sectioning(node,'subsection')
         return u''
+
+    def do_subsubsection(self,node):
+        self.sectioning(node,'subsubsection')
+        return u''
+
+    def do_paragraph(self,node):
+        self.sectioning(node,'paragraph')
+        return u''
+
+    def do_subparagraph(self,node):
+        self.sectioning(node,'do_subparagraph')
+        return u''
+
+
+
+    ############################
+
 
     def do_equation(self, node):
     	s = []
