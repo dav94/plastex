@@ -106,6 +106,20 @@ class MediaWikiRenderer (Renderer):
         return u'%s' % content
 
 
+    ###############################################
+    #references
+    ''' Method that insert label into PageTree'''
+    def label(self,lab):
+        #the reference to the current page is saved
+        self.tree.addLabel(lab)
+
+    ''' Labels are managed bey PageTree'''
+    def do_label(self,node):
+        #retriving label id
+        l = node.attributes['label']
+        self.label(l)
+
+
     ################################################
     #Formatting
     def do_par(self, node):
