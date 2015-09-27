@@ -13,7 +13,7 @@ class PageTree (object):
 		self.doc_title= doc_title
 		self.index = {}
 		self.pages = {}
-		self.media_url = {}
+		self.media_urls = {}
 		self.labels = {}
 		#ROOT PAGE
 		self.index[doc_title]={}
@@ -70,13 +70,13 @@ class PageTree (object):
 		self.labels[label]= self.current_url
 
 	def getRef(self,label):
-		return self.labels[label]
+		return self.media_urlss
 
 
 	''' This method collapse the text contained in subpages 
 	in the pages with level > level_min.
 	Tin pages with level<level_min is inserted an index of subpages. '''
 	def collapseText(self,level_min):
-		self.pages[self.doc_title].collapseText(level_min,self.pages,self.media_url,'',{})
+		self.pages[self.doc_title].collapseText(level_min,self.pages,self.media_urls,'',{})
 
 	
