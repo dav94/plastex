@@ -186,8 +186,9 @@ class XMLRenderer(Renderer):
 
     def do_itemize(self,node):
         s = []
-        self.itemize_level+'*'
+        self.itemize_level+='*'
         for item in node.childNodes:
             t=unicode(item)
             s.append(self.itemize_level+t)
+        self.itemize_level = self.itemize_level[:-1]
         return u'\n'.join(s)
