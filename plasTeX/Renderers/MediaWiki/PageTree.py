@@ -24,9 +24,17 @@ class PageTree (object):
 	''' This method creates a new page and enters 
 	in his enviroment setting current variables'''
 	def createPage(self, title,page_type):
+		
 		newurl = self.current_url+"/"+title
 		p = Page(newurl,page_type)
-		self.index[self.current][title]={}
+		#finding the right dictionary
+		path = unicode(self.current_url).split('/')
+		cindex = self.index
+		for i in range(0,len(path)):
+			cindex = cindex[path[i]]
+		#now cindex has the current dict
+		cindex[title]={}
+		print(self.index)
 		self.pages[newurl] = p
 		#updates current
 		self.previous= self.current

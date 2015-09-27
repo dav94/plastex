@@ -52,34 +52,35 @@ class MediaWikiRenderer (Renderer):
 
 
     #sectioning
-    def do_part (self,node):
-        title = node.attributes['title']
+    def sectioning(self, node,page_type):
+        title = unicode(node.attributes['title'])
         #adding index to parent
         self.tree.addIndexParentPage(title)
         #creation of the new page
-        self.tree.createPage(title,'part')
+        self.tree.createPage(title,page_type)
         #content processing
         text = unicode(node)
         #adding text to current page
         self.tree.addTextCurrentPage(text)
         #exiting the section
         self.tree.exitPage()
+
+
+    def do_part (self,node):
+        self.sectioning(node,'part')
         return u''
+
+    # def do_chapter (self,node):
+    #     self.sectioning(node,'chapter')
+    #     return u''
 
     def do_section(self,node):
-        title = node.attributes['title']
-        #adding index to parent
-        self.tree.addIndexParentPage(title)
-        #creation of the new page
-        self.tree.createPage(title,'section')
-        #content processing
-        text = unicode(node)
-        #adding text to current page
-        self.tree.addTextCurrentPage(text)
-        #exiting the section
-        self.tree.exitPage()
+        self.sectioning(node,'section')
         return u''
 
+    def do_subsection(self,node):
+        self.sectioning(node,'subsection')
+        return u''
 
     def do_equation(self, node):
     	s = []
