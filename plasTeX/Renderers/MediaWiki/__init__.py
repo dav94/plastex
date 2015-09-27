@@ -68,16 +68,16 @@ class MediaWikiRenderer (Renderer):
         
     def do_textbf(self,node):
         s=[]
-        s.append(u"\'\'")
+        s.append(u"\'\'\'")
         s.append(unicode(node))
-        s.append(u"\'\'")
+        s.append(u"\'\'\'")
         return u''.join(s)
         
     def do_textit(self,node):
         s=[]
-        s.append(u"\'\'\'")
+        s.append(u"\'\'")
         s.append(unicode(node))
-        s.append(u"\'\'\'")
+        s.append(u"\'\'")
         return u''.join(s)    
 
     do_emph = do_textbf
@@ -111,7 +111,6 @@ class MediaWikiRenderer (Renderer):
         s.append(u'')
         s.append(unicode(node))
         return u''.join(s)
-
 
 
 
