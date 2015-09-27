@@ -1,5 +1,6 @@
 from Page import Page
 import datetime
+import time
 
 ''' Class that memorize the pages' structure and content during parsing '''
 class PageTree (object):
@@ -42,7 +43,7 @@ class PageTree (object):
 		p = Page(title,newurl,page_type,level)
 		#update index
 		cindex = self.index
-		for i in range(0,len(path)):
+		for i in range(1,len(path)):
 			cindex = cindex[path[i]]
 		#now cindex has the current dict
 		#and new key is inserted
@@ -82,18 +83,19 @@ class PageTree (object):
 	def collapseText(self,level_min):
 		self.collapse_level = level_min
 		self.pages[self.doc_title].collapseText(level_min,self.pages,self.media_urls,'',{})
-		self.labels[label]= self.media_urls[self.labels[label]]
+		for l in self.labels:
+			self.labels[l] = self.media_urls[self.labels[l]]
 
 	'''Method that starts the rendering of refs'''
 	def fixReferences(self):
-		self.pages[self.doc_title].fixReferences(self.labels)
+		self.pages[self.doc_title].fixReferences(self.labels,self.pages)
 
 	'''Entry point for XML exporting'''
 	def exportXML(self):
 		s = []
 		s.append('<mediawiki xml:lang="en">')
 		#starting iteration
-		self._exportXML(s,0,self.index,self.doc_title)
+		self._exportXML(s,0,self.index,'')
 		s.append('</mediawiki>')
 		return '\n'.join(s)
 
@@ -101,9 +103,20 @@ class PageTree (object):
 	def _exportXML(self, text, lev,cur_dict, cur_url):
 		if lev<= self.collapse_level:
 			for key in cur_dict:
-				page = self.pages[curr_url+ '/'+key]
+				print('key='+key)
+				page = None
+				if cur_url=='':
+					page = self.pages[self.doc_title]
+				else:
+					page = self.pages[cur_url+ '/'+key]
+
+				print('page_url='+page.url)
+				print('page_title='+page.title)
 				text.append(self.getPageXML(page))
-				self._exportXML(text,lev+1,cur_dict[key],curr_url+"/"+key)
+				if cur_url =='':
+					self._exportXML(text,lev+1,cur_dict[key],key)
+				else:
+					self._exportXML(text,lev+1,cur_dict[key],curr_url+"/"+key)
 
 	'''Return the mediawiki XML of a single page'''
 	def getPageXML(self,page):
@@ -111,6 +124,7 @@ class PageTree (object):
 		s.append('<page>\n<title>'+page.title+'</title>')
 		s.append('\n<restrictions></restrictions>')
 		s.append('\n<revision>')
+		ts = time.time()
 		s.append('<timestamp>'+ datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
 		s.append('</timestamp>')
 		s.append('<contributor><username>BoTeX</username></contributor>')
