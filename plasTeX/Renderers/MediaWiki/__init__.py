@@ -156,7 +156,10 @@ class MediaWikiRenderer (Renderer):
         for item in node.childNodes:
             t=unicode(item)
             s.append(u';'+ str(item.attributes['term'])+":" +t)
-        return u'\n'.join(s)    
+        return u'\n'.join(s)
+
+    def do__tilde(self,node):
+        return unicode(node)    
 
 
 
@@ -210,4 +213,4 @@ class XMLRenderer(Renderer):
         return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', s)+'</math>'
 
     
-    
+
