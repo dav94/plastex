@@ -21,7 +21,7 @@ class Page(object):
 		if(self.level<level):
 			for subpage in index:
 				pages_dict[subpage].collapseText(level,pages_dict)
-		else
+		else:
 			#we have to managed the text
 			if len(index)>0:
 				for subpage in index:
