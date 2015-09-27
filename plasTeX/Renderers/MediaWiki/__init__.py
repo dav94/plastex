@@ -245,7 +245,6 @@ class MediaWikiRenderer (Renderer):
     do_quote=do_quotation
     do_verse=do_quotation
 
-    do_ensuremath = do_math
 
     def do_math(self, node): #TBD
         tag = None
@@ -261,7 +260,10 @@ class MediaWikiRenderer (Renderer):
 
         s = tag
         return '<math>'+ s +'</math>'
+        
+    do_ensuremath = do_math
     ###############################################
+    
     
 
 class XMLRenderer(Renderer):
