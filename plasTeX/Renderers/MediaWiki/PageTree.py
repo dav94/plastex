@@ -4,8 +4,11 @@ from Page import Page
 class PageTree (object):
 
 	''' The constructor requires the document name.
-		self.current handles the working section during parsing.
-		self.current_url handles the current url '''
+		-self.current handles the working section during parsing.
+		-self.current_url handles the current url
+		-self.pages is a dictionary of pages. The keys are internal url of pages.
+		-self.media_urls is a dictionary internal_url = media_url
+		-self.labels is a dictionary for label: label=media_url '''
 	def __init__(self, doc_title):
 		self.doc_title= doc_title
 		self.index = {}
