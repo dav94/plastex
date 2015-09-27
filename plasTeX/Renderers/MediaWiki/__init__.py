@@ -258,6 +258,17 @@ class MediaWikiRenderer (Renderer):
 
     def do_textrm(self, node):
         return unicode(node)
+
+    def do_small(self, node):
+        s = []
+        s.append(u'<small>')
+        s.append(unicode(node))
+        s.append(u'</small>')
+        return u''.join(s)
+    do_tiny=do_small
+    do_scriptsize=do_small
+       
+        
         
     ##########################################
     #Image tags
@@ -498,7 +509,5 @@ class XMLRenderer(Renderer):
     do_matrix = do_equation
     do_array = do_equation
 
-  
-       
-        
+
      
