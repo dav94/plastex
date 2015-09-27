@@ -191,9 +191,17 @@ class MediaWikiRenderer (Renderer):
 
     def do_quotation(self, node):
         s = []
-        s.append(u'')
+        s.append(u'<blockquote>')
         s.append(unicode(node))
-        return u'<blockquote>'.join(s)+'</blockquote>';
+        s.append(u'</blockquote>')
+        return u''.join(s)
+
+    def do_centering(self, node):
+        s = []
+        s.append(u'<div style="text-align:center;">')
+        s.append(unicode(node))
+        s.append(u'</div>')
+        return u''.join(s)
 
 
     ##########################################
@@ -303,6 +311,12 @@ class XMLRenderer(Renderer):
     def backslash(self,node):
         return u"<accapo>"
 
+    def do_centering(self, node):
+        s = []
+        s.append(u'<div style="text-align:center;">')
+        s.append(unicode(node))
+        s.append(u'</div>')
+        return u''.join(s)
 
     def do_math(self, node): #TBD
         tag = None
@@ -359,7 +373,7 @@ class XMLRenderer(Renderer):
 
     do_ensuremath = do_math
 
-    def do_equation(self, node): #TBD
+    def do_equation(self, node):
         begin_tag = None
         end_Tag = None
         label_tag = None
