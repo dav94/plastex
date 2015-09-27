@@ -152,13 +152,15 @@ class MediaWikiRenderer (Renderer):
         return u''.join(s)    
 
     do_emph = do_textit
-    do_itshape=do_textit
+    do_itshape = do_textit
    
-    def do__backslash(self,node):
+    def do_newline(self,node):
         s = []
         s.append(u'\n')
         s.append(unicode(node))
         return u''.join(s)
+    
+    do__backslash=do_newline
 
     def do_newpage(self,node):
         s = []
