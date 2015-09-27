@@ -131,6 +131,14 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         return u''.join(s)
 
+    def do_itemize(self,node):
+        s = []
+        self.itemize_level+='*'
+        for item in node.childNodes:
+            t=unicode(item)
+            s.append(self.itemize_level+t)
+        self.itemize_level = self.itemize_level[:-1]
+        return u'\n'.join(s)
     
 
 
@@ -184,11 +192,4 @@ class XMLRenderer(Renderer):
         s = u'   %s' % re.compile(r'^\s*\S+\s*(.*?)\s*\S+\s*$', re.S).sub(r'\1', node.source)
         return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', s)+'</math>'
 
-    def do_itemize(self,node):
-        s = []
-        self.itemize_level+='*'
-        for item in node.childNodes:
-            t=unicode(item)
-            s.append(self.itemize_level+t)
-        self.itemize_level = self.itemize_level[:-1]
-        return u'\n'.join(s)
+    
