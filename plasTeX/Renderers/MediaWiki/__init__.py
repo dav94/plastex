@@ -89,15 +89,16 @@ class MediaWikiRenderer (Renderer):
     def do_paragraph(self,node):
         self.sectioning(node,'paragraph')
         return u''
-
-    def do_subparagraph(self,node):
-        self.sectioning(node,'do_subparagraph')
-        return u''
-
-
-
     ############################
-
+    
+    #subparagraph are not node of the section tree
+    def do_subparagraph(self,node):
+        s =[]
+        s.append('\n\'\'\'')
+        s.append(unicode(node.attributes['title']))
+        s.append('\'\'\'\'')
+        s.append(unicode(node))
+        return u''.join(s)
 
     def do_equation(self, node):
     	s = []
