@@ -1,4 +1,5 @@
 from Page import Page
+import datetime
 
 ''' Class that memorize the pages' structure and content during parsing '''
 class PageTree (object):
@@ -25,6 +26,8 @@ class PageTree (object):
 		self.previous_url=''
 		self.current = doc_title
 		self.current_url= doc_title
+		#collapse level
+		self.collapse_level = 0
 
 
 	''' This method creates a new page and enters 
@@ -77,12 +80,45 @@ class PageTree (object):
 	in the pages with level > level_min.
 	Tin pages with level<level_min is inserted an index of subpages. '''
 	def collapseText(self,level_min):
+		self.collapse_level = level_min
 		self.pages[self.doc_title].collapseText(level_min,self.pages,self.media_urls,'',{})
 		self.labels[label]= self.media_urls[self.labels[label]]
 
 	'''Method that starts the rendering of refs'''
 	def fixReferences(self):
 		self.pages[self.doc_title].fixReferences(self.labels)
+
+	'''Entry point for XML exporting'''
+	def exportXML(self):
+		s = []
+		s.append('<mediawiki xml:lang="en">')
+		#starting iteration
+		self._exportXML(s,0,self.index,self.doc_title)
+		s.append('</mediawiki>')
+		return '\n'.join(s)
+
+	'''Recursion function to explore the tree during exporting'''
+	def _exportXML(self, text, lev,cur_dict, cur_url):
+		if lev<= self.collapse_level:
+			for key in cur_dict:
+				page = self.pages[curr_url+ '/'+key]
+				text.append(self.getPageXML(page))
+				cur_dict = cur_dict[key]
+				cur_url = curr_url+"/"+key
+				self._exportXML(text,lev+1,cur_dict,cur_url)
+
+	'''Return the mediawiki XML of a single page'''
+	def getPageXML(self,page):
+		s =[]
+		s.append('<page>\n<title>'+page.title+'</title>')
+		s.append('\n<restrictions></restrictions>')
+		s.append('\n<revision>')
+		s.append('<timestamp>'+ datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d %H:%M:%S'))
+		s.append('</timestamp>')
+		s.append('<contributor><username>BoTeX</username></contributor>')
+		s.append('<text>'+ page.text+'</text>')
+		s.append('</revision></page>')
+		return '\n'.join(s)
 
 
 	
