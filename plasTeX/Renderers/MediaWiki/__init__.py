@@ -62,9 +62,8 @@ class MediaWikiRenderer (Renderer):
 
     def do_par(self, node):
         s = []
-        s.append(u'par')
+        s.append(u'\n\n')
         s.append(unicode(node))
-        s.append(u'end_par')
         return u''.join(s)
         
     def do_textbf(self,node):
