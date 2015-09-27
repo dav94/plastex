@@ -7,14 +7,32 @@ class MediaWikiRenderer (Renderer):
     fileExtension = '.xml'
     lineWidth = 76
 
+    aliases = {
+        'superscript': 'active::^',
+        'subscript': 'active::_',
+        'dollar': '$',
+        'percent': '%',
+        'opencurly': '{',
+        'closecurly': '}',
+        'underscore': '_',
+        'ampersand': '&',
+        'hashmark': '#',
+        'space': ' ',
+        'tilde': 'active::~',
+        'at': '@',
+        'backslash': '\\',
+    }
     last_section = ''
 
     def __init__(self, *args, **kwargs):
         Renderer.__init__(self, *args, **kwargs)
         # Load dictionary with methods
-        for key in dir(self):
-            if key.startswith('do_'):
+       for key in dir(self):
+            if key.startswith('do__'):
+                self[self.aliases[key[4:]]] = getattr(self, key)
+            elif key.startswith('do_'):
                 self[key[3:]] = getattr(self, key)
+                
         self['default-layout'] = self['document-layout'] = self.default
         self.footnotes = []
         self.blocks = []
@@ -81,6 +99,7 @@ class MediaWikiRenderer (Renderer):
     	s.append(u']]')
     	s.append(unicode(node))
     	return u''.join(s)
+
 
 
 
