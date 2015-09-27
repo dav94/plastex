@@ -90,20 +90,33 @@ class MediaWikiRenderer (Renderer):
         
     def do_textbf(self,node):
         s=[]
-        s.append(u"\'\'")
+        s.append(u"\'\'\'")
         s.append(unicode(node))
-        s.append(u"\'\'")
+        s.append(u"\'\'\'")
         return u''.join(s)
         
     def do_textit(self,node):
         s=[]
-        s.append(u"\'\'\'")
+        s.append(u"\'\'")
         s.append(unicode(node))
-        s.append(u"\'\'\'")
+        s.append(u"\'\'")
         return u''.join(s)    
 
-    do_emph = do_textbf
+    do_emph = do_textit
 
+
+    def do__backslash(self,node):
+        s = []
+        s.append(u'\n')
+        s.append(unicode(node))
+        return u''.join(s)
+
+
+    def do_newpage(self,node):
+        s = []
+        s.append(u'')
+        s.append(unicode(node))
+        return u''.join(s)
 
 
 
@@ -145,7 +158,10 @@ class XMLRenderer(Renderer):
         return u"<accapo>"
 
     def do_math(self, node): #TBD
-        return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', node.source)+'</math>'
+        s = []
+        s.append('<%s>' % node.nodeName)
+        
+        #return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', node.source)+'</math>'
 
     do_ensuremath = do_math
     
