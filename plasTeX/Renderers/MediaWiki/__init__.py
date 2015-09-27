@@ -153,7 +153,10 @@ class XMLRenderer(Renderer):
         return u"<accapo>"
 
     def do_math(self, node): #TBD
-        return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', node.source)+'</math>'
+        s = []
+        s.append('<%s>' % node.nodeName)
+        
+        #return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', node.source)+'</math>'
 
     do_ensuremath = do_math
     
