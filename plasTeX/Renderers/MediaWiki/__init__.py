@@ -80,7 +80,7 @@ class MediaWikiRenderer (Renderer):
         s.append(u"\'\'")
         return u''.join(s)    
 
-    do_emph = do_textbf
+    do_emph = do_textit
 
     def do_section(self, node):
         self.last_section = node.attributes["title"]
