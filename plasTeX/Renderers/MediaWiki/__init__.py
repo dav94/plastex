@@ -201,13 +201,20 @@ class MediaWikiRenderer (Renderer):
 
     def do_quotation(self, node):
         s = []
-        s.append(u'')
+        s.append(u'<blockquote>')
         s.append(unicode(node))
-        return u'<blockquote>'.join(s)+'</blockquote>';
+        s.append(u'</blockquote>')
+        return u''.join(s)
 
     do_quote=do_quotation
     do_verse=do_quotation
     
+    def do_centering(self, node):
+        s = []
+        s.append(u'<div style="text-align:center;">')
+        s.append(unicode(node))
+        s.append(u'</div>')
+        return u''.join(s)
     
 
 class XMLRenderer(Renderer):
@@ -258,3 +265,10 @@ class XMLRenderer(Renderer):
     def do_equation(self, node): #TBD
         s = u'   %s' % re.compile(r'^\s*\S+\s*(.*?)\s*\S+\s*$', re.S).sub(r'\1', node.source)
         return '<math>'+re.sub(r'\s*(_|\^)\s*', r'\1', s)+'</math>'
+    def do_centering(self, node):
+        s = []
+        s.append(u'<div style="text-align:center;">')
+        s.append(unicode(node))
+        s.append(u'</div>')
+        return u''.join(s)
+    
