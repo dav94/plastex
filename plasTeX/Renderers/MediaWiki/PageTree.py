@@ -103,9 +103,7 @@ class PageTree (object):
 			for key in cur_dict:
 				page = self.pages[curr_url+ '/'+key]
 				text.append(self.getPageXML(page))
-				cur_dict = cur_dict[key]
-				cur_url = curr_url+"/"+key
-				self._exportXML(text,lev+1,cur_dict,cur_url)
+				self._exportXML(text,lev+1,cur_dict[key],curr_url+"/"+key)
 
 	'''Return the mediawiki XML of a single page'''
 	def getPageXML(self,page):
