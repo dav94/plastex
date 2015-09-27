@@ -265,9 +265,16 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         s.append(u'</small>')
         return u''.join(s)
+
     do_tiny=do_small
     do_scriptsize=do_small
-       
+    
+    def do_underline(self, node):
+        s = []
+        s.append(u'<u>')
+        s.append(unicode(node))
+        s.append(u'</u>')
+        return u''.join(s)
         
         
     ##########################################
@@ -510,4 +517,4 @@ class XMLRenderer(Renderer):
     do_array = do_equation
 
 
-     
+   
