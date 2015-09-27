@@ -85,6 +85,13 @@ class MediaWikiRenderer (Renderer):
         self.sectioning(node,'subsubsection')
         return u''
 
+    def do_paragraph(self,node):
+        self.sectioning(node,'paragraph')
+        return u''
+
+    def do_subparagraph(self,node):
+        self.sectioning(node,'do_subparagraph')
+        return u''
 
 
 
