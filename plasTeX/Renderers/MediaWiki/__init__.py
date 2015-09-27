@@ -248,21 +248,16 @@ class MediaWikiRenderer (Renderer):
     ##########################################
     #Image tags
 
-    def do_figure(self,node):
+    def do_includegraphics(self,node):
         s = []
-        self.list_level+='*'
-        for item in node.childNodes:
-            t=unicode(item)
-            s.append(self.list_level+t)
-        self.list_level = self.list_level[:-1]
-        return u'\n'.join(s)
-
-    # def do_caption(self,node):
-    #     s = []
-    #     s.append('|')
-    #     s.append(unicode(node))
-    #     s.append('end_caption')
-    #     return u''.join(s)
+        s.append('[[')
+        if node.hasAttributes():
+            for key, value in node.attributes.items():
+                if key == 'self':
+                     continue
+                if key == 'file':
+                    s.append('%s|%s]]' % (unicode(value),unicode(node.parentNode.parentNode.previousSibling.lastChild)))
+        return u''.join(s) 
 
     ###################################################
     #Math tags
