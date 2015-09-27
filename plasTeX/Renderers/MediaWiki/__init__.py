@@ -213,6 +213,12 @@ class MediaWikiRenderer (Renderer):
     def do_flushleft(self, node):
         return unicode(node)
 
+    def do_footnote(self,node):
+        s=[]
+        s.append(u" (")
+        s.append(unicode(node))
+        s.append(u") ")
+        return u''.join(s)     
 
 
     ##########################################
@@ -278,7 +284,7 @@ class MediaWikiRenderer (Renderer):
 
         s = tag
         return '<math>'+ s +'</math>'
-        
+
     do_ensuremath = do_math
     ###############################################
     
@@ -427,4 +433,4 @@ class XMLRenderer(Renderer):
     do_matrix = do_equation
     do_array = do_equation
         
- 
+     
