@@ -26,7 +26,14 @@ class PageTree (object):
 	def createPage(self, title,page_type):
 		newurl = self.current_url+"/"+title
 		p = Page(newurl,page_type)
-		self.index[self.current][title]={}
+		#finding the right dictionary
+		path = unicode(self.current_url).split('/')
+		cindex = self.index
+		for i in range(0,len(path)):
+			cindex = cindex[path[i]]
+		#now cindex has the current dict
+		cindex[title]={}
+		#add pages to pages index
 		self.pages[newurl] = p
 		#updates current
 		self.previous= self.current
@@ -47,6 +54,16 @@ class PageTree (object):
 	def exitPage(self):
 		self.current = self.previous
 		self.current_url= self.previous_url
+
+
+
+	def collapsePages(level):
+		#let's creates a tree of the ids
+		id_index = []
+		current_dict = {}
+		while(len(current_dict)>=1):
+			
+
 
 
 	def getXML():

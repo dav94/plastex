@@ -38,6 +38,7 @@ class MediaWikiRenderer (Renderer):
         self.blocks = []
         #tree object
         self.tree = PageTree()
+        self.list_level='' 
 
     def default(self, node):
         s = []
@@ -50,23 +51,54 @@ class MediaWikiRenderer (Renderer):
     def do_textDefault(self, node):
         return node 
 
-
+    ###############################
     #sectioning
-    def do_section(self,node):
-        title = node.attributes['title']
+    def sectioning(self, node,page_type):
+        title = unicode(node.attributes['title'])
         #adding index to parent
         self.tree.addIndexParentPage(title)
         #creation of the new page
-        self.tree.createPage(title,'section')
+        self.tree.createPage(title,page_type)
         #content processing
         text = unicode(node)
         #adding text to current page
         self.tree.addTextCurrentPage(text)
         #exiting the section
         self.tree.exitPage()
+
+    def do_part (self,node):
+        self.sectioning(node,'part')
         return u''
 
+    def do_chapter (self,node):
+        self.sectioning(node,'chapter')
+        return u''
 
+    def do_section(self,node):
+        self.sectioning(node,'section')
+        return u''
+
+    def do_subsection(self,node):
+        self.sectioning(node,'subsection')
+        return u''
+
+    def do_subsubsection(self,node):
+        self.sectioning(node,'subsubsection')
+        return u''
+
+    def do_paragraph(self,node):
+        self.sectioning(node,'paragraph')
+        return u''
+    ############################
+    
+    #subparagraph are not node of the section tree
+    def do_subparagraph(self,node):
+        s =[]
+        s.append('\n\'\'\'')
+        s.append(unicode(node.attributes['title']))
+        s.append('\'\'\'\'')
+        s.append(unicode(node))
+        return u''.join(s)
 
     def do_equation(self, node):
     	s = []
@@ -103,7 +135,8 @@ class MediaWikiRenderer (Renderer):
         return u''.join(s)    
 
     do_emph = do_textit
-
+    do_itshape=do_textit
+   
 
     def do__backslash(self,node):
         s = []
@@ -118,12 +151,6 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         return u''.join(s)
 
-    # def do_label(self,node):
-    #     s = []
-    #     s.append(u'<%s>' % node.nodeName)
-    #     s.append(unicode(node))
-    #     s.append(u'</%s>' % node.nodeName)
-    #     return u''.join(s)
 
     def do_math(self, node): #TBD
         #s = []
@@ -133,7 +160,65 @@ class MediaWikiRenderer (Renderer):
 
     do_ensuremath = do_math
 
+    def do_itemize(self,node):
+        s = []
+        self.list_level+='*'
+        for item in node.childNodes:
+            t=unicode(item)
+            s.append(self.list_level+t)
+        self.list_level = self.list_level[:-1]
+        return u'\n'.join(s)
 
+    def do_enumerate(self,node):
+        s = []
+        self.list_level+='#'
+        for item in node.childNodes:
+            t=unicode(item)
+            s.append(self.list_level+t)
+        self.list_level = self.list_level[:-1]
+        return u'\n'.join(s)
+    
+    def do_description(self,node):
+        s = []
+        for item in node.childNodes:
+            t=unicode(item)
+            s.append(u';'+ str(item.attributes['term'])+":" +t)
+        return u'\n'.join(s)
+
+    def do__tilde(self,node):
+        return unicode(node)    
+
+    def do__dollar(self,node):
+        return u'$'
+
+    def do__percent(self,node):
+        return u'%'
+
+    def do__opencurly(self,node):
+        return u'{'
+
+    def do__closecurly(self,node):
+        return u'}'
+    
+    def do__hashmark(self,node):
+        return u'#'
+
+    def do__underscore(self,node):
+        return u'_'
+
+    def do__ampersand(self,node):
+        return u'&'
+
+    def do_quotation(self, node):
+        s = []
+        s.append(u'')
+        s.append(unicode(node))
+        return u'<blockquote>'.join(s)+'</blockquote>';
+
+    do_quote=do_quotation
+    do_verse=do_quotation
+    
+    
 
 class XMLRenderer(Renderer):
 
@@ -148,7 +233,8 @@ class XMLRenderer(Renderer):
         self.footnotes = []
         self.blocks = []
         self['\\']=self.backslash
-    
+        
+          
 
     def default(nself,node):
         s = []
@@ -270,3 +356,4 @@ class XMLRenderer(Renderer):
     do_eqnarray = do_equation
     do_matrix = do_equation
     do_array = do_equation
+
