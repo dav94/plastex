@@ -21,7 +21,7 @@ tex3.ownerDocument.config['files']['split-level'] = -100
 tex3.ownerDocument.config['files']['filename'] = 'test.mw'
 tex3.input(text)
 document3 = tex3.parse()
-rend = WikiRenderer()
+rend = WikiRenderer("Test")
 rend.render(document3)
 o = open('tree.mw','w')
 o.write(str(rend.tree.index))

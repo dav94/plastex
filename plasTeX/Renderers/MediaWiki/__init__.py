@@ -24,8 +24,10 @@ class MediaWikiRenderer (Renderer):
         'backslash': '\\',
     }
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, doc_title,*args, **kwargs):
         Renderer.__init__(self, *args, **kwargs)
+        #document title
+        self.doc_title = doc_title
         # Load dictionary with methods
         for key in dir(self):
             if key.startswith('do__'):
@@ -37,7 +39,7 @@ class MediaWikiRenderer (Renderer):
         self.footnotes = []
         self.blocks = []
         #tree object
-        self.tree = PageTree()
+        self.tree = PageTree(doc_title)
         self.list_level='' 
 
     def default(self, node):

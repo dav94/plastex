@@ -6,20 +6,22 @@ class PageTree (object):
 	''' The constructor requires the document name.
 		self.current handles the working section during parsing.
 		self.current_url handles the current url '''
-	def __init__(self):
+	def __init__(self, doc_title):
+		self.doc_title= doc_title
 		self.index = {}
 		self.pages = {}
-		self.label = {}
+		self.media_url = {}
+		self.labels = {}
 		#ROOT PAGE
-		self.index['ROOT']={}
-		r = Page('ROOT','root',-1)
-		self.pages['ROOT']= r
+		self.index[doc_title]={}
+		r = Page(doc_title,doc_title,'root',-1)
+		self.pages[doc_title]= r
 
 		#indexes
 		self.previous=''
 		self.previous_url=''
-		self.current = 'ROOT'
-		self.current_url= 'ROOT'
+		self.current = doc_title
+		self.current_url= doc_title
 
 
 	''' This method creates a new page and enters 
@@ -31,7 +33,7 @@ class PageTree (object):
 		#finding level
 		level = len(path)-1
 		#create new page	
-		p = Page(newurl,page_type,level)
+		p = Page(title,newurl,page_type,level)
 		#update index
 		cindex = self.index
 		for i in range(0,len(path)):
@@ -72,6 +74,6 @@ class PageTree (object):
 	in the pages with level > level_min.
 	Tin pages with level<level_min is inserted an index of subpages. '''
 	def collapseText(self,level_min):
-		self.pages['ROOT'].collapseText(level_min,self.pages)
+		self.pages[self.doc_title].collapseText(level_min,self.pages,self.media_url,'',{})
 
 	
