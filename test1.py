@@ -17,7 +17,7 @@ sys.setdefaultencoding("utf-8")
 # rend.render(document2)
 
  
-f2 = open('test2.tex','r')
+f2 = open('tex_sources/test2.tex','r')
 text2 = f2.read().decode('utf-8')
 tex3 = TeX()#managing subspace
 tex3.ownerDocument.config['files']['split-level'] = -100
@@ -28,7 +28,7 @@ document3 = tex3.parse()
 rend = WikiRenderer("Test")
 rend.render(document3)
 #elaborazione
-rend.tree.collapseText(1)
+rend.tree.collapseText(0)
 rend.tree.fixReferences()
 xml = rend.tree.exportXML()
 o = open('test.mw','w')

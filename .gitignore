@@ -8,7 +8,8 @@ __pycache__/
 *.tex
 *.mw
 *.xml
-.paux
+*.paux
+*.directory
 
 # Distribution / packaging
 .Python
