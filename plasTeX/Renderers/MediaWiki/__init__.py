@@ -350,7 +350,7 @@ class MediaWikiRenderer (Renderer):
             label_tag = "<label> " + label_tag + " </label>"
         else:
             label_tag = ""
-        return '<dmath>'+ label_tag + s +'</dmath>'
+        return '<dmath>'+ label_tag + s +'</dmath>\n'
 
     do_displaymath = do_equation
     do_eqnarray = do_equation
@@ -394,8 +394,6 @@ class XMLRenderer(Renderer):
         self['default-layout'] = self['document-layout'] = self.default
         self.footnotes = []
         self.blocks = []
-        self['\\']=self.backslash
-
     def default(nself,node):
         s = []
         s.append('<%s>' % node.nodeName)
