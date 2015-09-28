@@ -1,53 +1,53 @@
 <document>
-<document>
-<par>
-Testo del documento 
-</par>
-<section>
-<attributes>
-<toc>None</toc>
-<*modifier*>None</*modifier*>
-<title>Sezione 1</title>
-</attributes>
-<par>
- Testo della sezione 
-</par>
-<par>
-<math> x=2 </math>
-</par>
-<par>
-<math><label> eq:1 </label>  \frac{x}{y} </math>
-</par>
-<subsection>
-<attributes>
-<toc>None</toc>
-<*modifier*>None</*modifier*>
-<title>SottoSezione1</title>
-</attributes>
-<par>
- Testo della sottosezione 
-</par>
-<subsubsection>
-<attributes>
-<toc>None</toc>
-<*modifier*>None</*modifier*>
-<title>SottoSottoSezione</title>
-</attributes>
-<par>
- Testo della SottoSottoSezione Uso l’equazione <ref>
-<attributes>
-<label>eq:1</label>
-</attributes>
+	<document>
+		<par>
+			Testo del documento 
+		</par>
+		<section>
+			<attributes>
+				<toc>None</toc>
+				<*modifier*>None</*modifier*>
+				<title>Sezione 1</title>
+			</attributes>
+			<par>
+				Testo della sezione 
+			</par>
+			<par>
+				<math> x=2 </math>
+			</par>
+			<par>
+				<math><label> eq:1 </label>  \frac{x}{y} </math>
+			</par>
+			<subsection>
+				<attributes>
+					<toc>None</toc>
+					<*modifier*>None</*modifier*>
+					<title>SottoSezione1</title>
+				</attributes>
+				<par>
+					Testo della sottosezione 
+				</par>
+				<subsubsection>
+					<attributes>
+						<toc>None</toc>
+						<*modifier*>None</*modifier*>
+						<title>SottoSottoSezione</title>
+					</attributes>
+					<par>
+						Testo della SottoSottoSezione Uso l’equazione <ref>
+						<attributes>
+							<label>eq:1</label>
+						</attributes>
 
-</ref>
- 
-</par>
+					</ref>
+					
+				</par>
 
-</subsubsection>
+			</subsubsection>
 
-</subsection>
+		</subsection>
 
-</section>
+	</section>
 
 </document>
 

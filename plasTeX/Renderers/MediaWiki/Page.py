@@ -54,12 +54,12 @@ class Page(object):
 					murl+= '_'+str(nused+1)
 					url_dic[murl]+=1
 				#saving mediawiki url
-				self.media_url= self.murl
+				self.media_url= murl
 				mediaurl_dic[self.url]=murl
 
 			#we have to managed the text
 			for subpage in self.subpages:
-				t = pages_dict[subpage].collapseText(level,pages_dict)
+				t = pages_dict[subpage].collapseText(level,pages_dict,mediaurl_dic,last_url,url_dic)
 				#add text
 				self.text+= '\n'+t
 			
@@ -68,6 +68,11 @@ class Page(object):
 			self.text = title+ "\n"+ self.text
 			#return the text
 			return self.text
+
+	def collapseMediaURL(self,):
+
+
+
 
 	'''This method insert the right mediawikiurl in 
 	the \ref tags after the collapsing'''
