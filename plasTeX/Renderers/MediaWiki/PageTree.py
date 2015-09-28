@@ -10,7 +10,8 @@ class PageTree (object):
 		-self.current_url handles the current url
 		-self.pages is a dictionary of pages. The keys are internal url of pages.
 		-self.media_urls is a dictionary internal_url = media_url
-		-self.labels is a dictionary for label: label=media_url '''
+		-self.labels is a dictionary for label: label=media_url 
+		-self.page_stack contains the history of enviroment until the one before the current'''
 	def __init__(self, doc_title):
 		self.doc_title= doc_title
 		self.index = {}
@@ -21,7 +22,6 @@ class PageTree (object):
 		self.index[doc_title]={}
 		r = Page(doc_title,doc_title,'root',-1)
 		self.pages[doc_title]= r
-
 		#indexes
 		self.page_stack = []
 		self.pageurl_stack = []
@@ -35,16 +35,15 @@ class PageTree (object):
 	in his enviroment setting current variables'''
 	def createPage(self, title,page_type):
 		newurl = self.current_url+"/"+title
-		#finding the right dictionary
-		path = unicode(self.current_url).split('/')
 		#finding level
-		level = len(path)-1
+		level = len(self.page_stack)
 		#create new page	
 		p = Page(title,newurl,page_type,level)
 		#update index
 		cindex = self.index
-		for i in range(0,len(path)):
-			cindex = cindex[path[i]]
+		for i in range(0,len(self.page_stack)):
+			cindex = cindex[self.page_stack[i]]
+		cindex = cindex[self.current]
 		#now cindex has the current dict
 		#and new key is inserted
 		cindex[title]={}
@@ -58,8 +57,8 @@ class PageTree (object):
 
 	'''This method insert text in the current page   '''
 	def addTextCurrentPage(self,text):
-		print('ADDING TEXT TO URL='+self.current_url+' | ADDING TEXT='+text +\
-			' |current_url='+self.current_url+ '|current='+self.current )
+		#print('ADDING TEXT TO URL='+unicode(self.current_url)+' | ADDING TEXT='+unicode(text) +\
+			#' |current url='+unicode(self.current_url)+ '|current='+unicode(self.current) )
 		self.pages[self.current_url].addText(text)
 
 	'''This method insert a page in the current page's index. It's used when 

@@ -18,7 +18,6 @@ class Page(object):
 	def addText(self,text):
 		self.text = text
 
-
 	def addIndex(self, ind):
 		self.index.append(ind)
 
@@ -70,7 +69,7 @@ class Page(object):
 	def fixReferences(self, labels,pages):
 		for ref in re.finditer('\\ref{(.*?)}', self.text):
 			tag = ref.group(0)
-			label = reg.group(1)
+			label = ref.group(1)
 			self.text.replace(tag,' ([[' + labels[label] + ']]) ')
 		for sub in self.index:
 			pages[sub].fixReferences(labels,pages)
