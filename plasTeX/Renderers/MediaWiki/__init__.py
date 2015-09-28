@@ -345,12 +345,11 @@ class MediaWikiRenderer (Renderer):
 
         # check if label tag exist. If it does, creates the tag
         if label_tag is not '':
+            #adding label to tree
+            self.label(label_tag)
             label_tag = "<label> " + label_tag + " </label>"
         else:
             label_tag = ""
-
-        #adding label to tree
-        self.label(label_tag)
         return '<dmath>'+ label_tag + s +'</dmath>'
 
     do_displaymath = do_equation
