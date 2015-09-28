@@ -41,7 +41,7 @@ class MediaWikiRenderer (Renderer):
         #tree object
         self.tree = PageTree(doc_title)
         #parameter for list formatting
-        self.list_level='' 
+        self.list_level=u'' 
         #set for default tags
         self.def_tags = set()
 
@@ -53,7 +53,7 @@ class MediaWikiRenderer (Renderer):
 
 
     def do_textDefault(self, node):
-        return node 
+        return unicode(node) 
 
     ###############################
     #sectioning
@@ -104,7 +104,7 @@ class MediaWikiRenderer (Renderer):
         s.append(unicode(node))
         return u''.join(s)
     
-
+    '''Enter point for parsing. Root page is already created'''
     def do_document(self,node):
         content = unicode(node)
         self.tree.addTextCurrentPage(content)
@@ -175,7 +175,7 @@ class MediaWikiRenderer (Renderer):
 
     def do_itemize(self,node):
         s = []
-        self.list_level+='*'
+        self.list_level+=u'*'
         for item in node.childNodes:
             t=unicode(item)
             s.append(self.list_level+t)
@@ -184,7 +184,7 @@ class MediaWikiRenderer (Renderer):
 
     def do_enumerate(self,node):
         s = []
-        self.list_level+='#'
+        self.list_level+=u'#'
         for item in node.childNodes:
             t=unicode(item)
             s.append(self.list_level+t)
