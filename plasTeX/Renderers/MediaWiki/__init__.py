@@ -126,7 +126,7 @@ class MediaWikiRenderer (Renderer):
 
     def do_ref(self,node):
         r = node.attributes['label']
-        return unicode(' (\ref{'+r+'}) ')
+        return unicode('\\ref{'+r+'} ')
 
     do_pageref = do_ref
     do_vref = do_ref
