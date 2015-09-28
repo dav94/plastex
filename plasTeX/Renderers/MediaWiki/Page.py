@@ -29,48 +29,49 @@ class Page(object):
 	''' This method insert the text of subpages in this page if his level is 
 	greater than the level parameter.
 	It requires the dictionary of pages.'''
-	def collapseText(self,level,pages_dict,mediaurl_dic,last_url,url_dic):
-		if(self.level<level):
-			last_url = self.url
+	def collapseText(self,max_level,pages_dict):
+		if(self.level<max_level):
 			for subpage in self.subpages:
-				pages_dict[subpage].collapseText(level,pages_dict,mediaurl_dic,last_url,url_dic)
+				pages_dict[subpage].collapseText(max_level,pages_dict)
 				#the subpages'index is created
 				for p in self.subpages:
 					self.text += '\n[['+p+']]'
-				#saving mediaurl
-				self.media_url = self.url
-				mediaurl_dic[self.url] = self.media_url
 		else:
-			if self.level==level: 
-				last_url = self.url
-				#saving mediawikiurl
-				self.media_url= self.url
-				mediaurl_dic[self.url] = self.media_url
-			else:
-				#creation of media-wiki url
-				murl = last_url+'#'+self.title
-				if murl in url_dic:
-					nused = url_dic[murl]
-					murl+= '_'+str(nused+1)
-					url_dic[murl]+=1
-				#saving mediawiki url
-				self.media_url= murl
-				mediaurl_dic[self.url]=murl
-
 			#we have to managed the text
 			for subpage in self.subpages:
-				t = pages_dict[subpage].collapseText(level,pages_dict,mediaurl_dic,last_url,url_dic)
+				t = pages_dict[subpage].collapseText(max_level,pages_dict)
 				#add text
 				self.text+= '\n'+t
-			
-			#Creation of current page'title
-			title = "="*(level-self.level+1)+self.title+"="*(level-self.level+1)
-			self.text = title+ "\n"+ self.text
-			#return the text
-			return self.text
+			if self.level>max_level:
+				#Creation of current page'title
+				tit = "="*(max_level-self.level+1)+self.title+"="*(max_level-self.level+1)
+				self.text = tit+ "\n"+ self.text
+				#return the text
+				return self.text
 
-	def collapseMediaURL(self,):
-
+	# def collapseMediaURL(self,mediaurl_dic,last_url,url_dic):
+	# 	if(self.level<level):
+	# 		last_url = self.url
+	# 		for subpage in self.subpages:
+	# 			#saving mediaurl
+	# 			self.media_url = self.url
+	# 			mediaurl_dic[self.url] = self.media_url
+	# 	else:
+	# 		if self.level==level: 
+	# 			last_url = self.url
+	# 			#saving mediawikiurl
+	# 			self.media_url= self.url
+	# 			mediaurl_dic[self.url] = self.media_url
+	# 		else:
+	# 			#creation of media-wiki url
+	# 			murl = last_url+'#'+self.title
+	# 			if murl in url_dic:
+	# 				nused = url_dic[murl]
+	# 				murl+= '_'+str(nused+1)
+	# 				url_dic[murl]+=1
+	# 			#saving mediawiki url
+	# 			self.media_url= murl
+	# 			mediaurl_dic[self.url]=mur
 
 
 
