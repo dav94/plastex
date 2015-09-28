@@ -84,9 +84,13 @@ class PageTree (object):
 	Tin pages with level<level_min is inserted an index of subpages. '''
 	def collapseText(self,level_max):
 		self.collapse_level = level_max
+		#collapsing text
 		self.pages[self.doc_title].collapseText(level_max,self.pages)
-		# for l in self.labels:
-		# 	self.labels[l] = self.media_urls[self.labels[l]]
+		#collapsing mediawiki url
+		self.pages[self.doc_title].collapseMediaURL(level_max,self.pages,self.media_urls,'',{})
+		#fixing labels with mediawikiurls
+		for l in self.labels:
+			self.labels[l] = self.media_urls[self.labels[l]]
 
 	'''Method that starts the rendering of refs'''
 	def fixReferences(self):

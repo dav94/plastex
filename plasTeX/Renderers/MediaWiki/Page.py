@@ -50,29 +50,36 @@ class Page(object):
 				#return the text
 				return self.text
 
-	# def collapseMediaURL(self,mediaurl_dic,last_url,url_dic):
-	# 	if(self.level<level):
-	# 		last_url = self.url
-	# 		for subpage in self.subpages:
-	# 			#saving mediaurl
-	# 			self.media_url = self.url
-	# 			mediaurl_dic[self.url] = self.media_url
-	# 	else:
-	# 		if self.level==level: 
-	# 			last_url = self.url
-	# 			#saving mediawikiurl
-	# 			self.media_url= self.url
-	# 			mediaurl_dic[self.url] = self.media_url
-	# 		else:
-	# 			#creation of media-wiki url
-	# 			murl = last_url+'#'+self.title
-	# 			if murl in url_dic:
-	# 				nused = url_dic[murl]
-	# 				murl+= '_'+str(nused+1)
-	# 				url_dic[murl]+=1
-	# 			#saving mediawiki url
-	# 			self.media_url= murl
-	# 			mediaurl_dic[self.url]=mur
+	''' This method collapse internal url of pages in mediawiki_url'''
+	def collapseMediaURL(self,max_level,pages_dict,mediaurl_dic,last_url,url_dic):
+		if(self.level<max_level):
+			last_url = self.url
+			#saving mediaurl
+			mediaurl_dic[self.url] = self.media_url = self.url
+			#managing subspace
+			for subpage in self.subpages:
+				pages_dict[subpage].collapseMediaURL(max_level,pages_dict,\
+					mediaurl_dic,last_url,url_dic)
+		else:
+			if self.level==max_level: 
+				last_url = self.url
+				#saving mediawikiurl
+				self.media_url= self.url
+				mediaurl_dic[self.url] = self.media_url
+			else:
+				#creation of media-wiki url
+				murl = last_url+'#'+self.title
+				if murl in url_dic:
+					nused = url_dic[murl]
+					murl+= '_'+str(nused+1)
+					url_dic[murl]+=1
+				#saving mediawiki url
+				self.media_url= murl
+				mediaurl_dic[self.url]=murl
+			#managing subpages
+			for subpage in self.subpages:
+				pages_dict[subpage].collapseMediaURL(max_level,pages_dict,\
+					mediaurl_dic,last_url,url_dic)
 
 
 
@@ -94,6 +101,7 @@ class Page(object):
 		s =[]
 		s.append('title='+self.title)
 		s.append('url='+self.url)
+		s.append('media_url='+ self.media_url)
 		s.append('subpages='+str(self.subpages))
 		s.append('level='+str(self.level))
 		return '  '.join(s)

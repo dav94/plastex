@@ -19,7 +19,7 @@ sys.setdefaultencoding("utf-8")
  
 f2 = open('test2.tex','r')
 text2 = f2.read().decode('utf-8')
-tex3 = TeX()
+tex3 = TeX()#managing subspace
 tex3.ownerDocument.config['files']['split-level'] = -100
 tex3.ownerDocument.config['files']['filename'] = 'test.mww'
 tex3.ownerDocument.config['files']['input-encoding']='utf-8'
@@ -28,7 +28,7 @@ document3 = tex3.parse()
 rend = WikiRenderer("Test")
 rend.render(document3)
 #elaborazione
-rend.tree.collapseText(10)
+rend.tree.collapseText(1)
 rend.tree.fixReferences()
 xml = rend.tree.exportXML()
 o = open('test.mw','w')
