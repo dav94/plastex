@@ -251,9 +251,9 @@ class MediaWikiRenderer (Renderer):
 
     def do_footnote(self,node):
         s=[]
-        s.append(u" (")
+        s.append(u"<ref>")
         s.append(unicode(node))
-        s.append(u") ")
+        s.append(u"</ref>")
         return u''.join(s)
 
     def do_hrulefill(self,node):
@@ -375,7 +375,7 @@ class MediaWikiRenderer (Renderer):
         else:
             tag = ''
 
-        return '<math>'+ tag +'</math>'
+        return '<math>'+ tag +'</math>\n'
 
     do_ensuremath = do_math
     ###############################################
