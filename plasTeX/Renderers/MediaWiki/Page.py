@@ -35,16 +35,17 @@ class Page(object):
 				pages_dict[subpage].collapseText(max_level,pages_dict)
 				#the subpages'index is created
 				for p in self.subpages:
-					self.text += '\n[['+p+']]'
+					self.text += '\n\n==Sottopagine==\n[['+p+']]'
 		else:
 			#we have to managed the text
 			for subpage in self.subpages:
 				t = pages_dict[subpage].collapseText(max_level,pages_dict)
 				#add text
 				self.text+= '\n'+t
+				#print('text@'+ self.text)
 			if self.level>max_level:
 				#Creation of current page'title
-				tit = "="*(max_level-self.level+1)+self.title+"="*(max_level-self.level+1)
+				tit = '\n'+'='*(self.level-max_level+1)+self.title+'='*(self.level-max_level+1)
 				self.text = tit+ "\n"+ self.text
 				#return the text
 				return self.text
@@ -80,7 +81,6 @@ class Page(object):
 	def fixReferences(self, labels,pages):
 		for ref in re.finditer('\\ref{(.*?)}', self.text):
 			label = ref.group(1)
-			print('|label='+label+'|'+'\\ref{'+label+'}'+'|url='+labels[label]+'|')
 			self.text = self.text.replace(unicode('\\ref{'+label+'}'),' ([[' + labels[label] + ']]) ')
 		for sub in self.subpages:
 			pages[sub].fixReferences(labels,pages)
@@ -91,4 +91,5 @@ class Page(object):
 		s.append('title='+self.title)
 		s.append('url='+self.url)
 		s.append('subpages='+str(self.subpages))
+		s.append('level='+str(self.level))
 		return '  '.join(s)

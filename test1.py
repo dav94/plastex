@@ -28,12 +28,13 @@ document3 = tex3.parse()
 rend = WikiRenderer("Test")
 rend.render(document3)
 #elaborazione
-rend.tree.collapseText(1)
+rend.tree.collapseText(10)
 rend.tree.fixReferences()
 xml = rend.tree.exportXML()
 o = open('test.mw','w')
 o.write(xml)
 
-print(str(rend.tree.index))
+#print(str(rend.tree.index))
 for k in rend.tree.pages:
 	print(str(rend.tree.pages[k]))
+	#print(rend.tree.pages[k].text)

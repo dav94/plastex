@@ -82,9 +82,9 @@ class PageTree (object):
 	''' This method collapse the text contained in subpages 
 	in the pages with level > level_min.
 	Tin pages with level<level_min is inserted an index of subpages. '''
-	def collapseText(self,level_min):
-		self.collapse_level = level_min
-		self.pages[self.doc_title].collapseText(level_min,self.pages)
+	def collapseText(self,level_max):
+		self.collapse_level = level_max
+		self.pages[self.doc_title].collapseText(level_max,self.pages)
 		# for l in self.labels:
 		# 	self.labels[l] = self.media_urls[self.labels[l]]
 
@@ -97,7 +97,7 @@ class PageTree (object):
 		s = []
 		s.append('<mediawiki xml:lang="en">')
 		#starting iteration
-		self._exportXML(s,0,self.index,'')
+		self._exportXML(s,-1,self.index,'')
 		s.append('</mediawiki>')
 		return '\n'.join(s)
 
@@ -113,7 +113,7 @@ class PageTree (object):
 
 				text.append(self.getPageXML(page))
 				if cur_url =='':
-					self._exportXML(text,lev+1,cur_dict[key],key)
+					self._exportXML(text,lev+1,cur_dict[key],self.doc_title)
 				else:
 					self._exportXML(text,lev+1,cur_dict[key],cur_url+"/"+key)
 
